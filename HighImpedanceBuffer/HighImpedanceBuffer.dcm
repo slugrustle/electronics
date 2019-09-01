@@ -1,0 +1,94 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 0679L0250-05
+D 250mA 125VDC fast 2410 case fuse
+K fuse
+F ~
+$ENDCMP
+#
+$CMP 1776540
+D 6 position terminal block receptacle with screw threads.
+K connector
+F ~
+$ENDCMP
+#
+$CMP C
+D Unpolarized capacitor
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP CMDD6001
+D Low leakage diode, SOD323
+K diode
+F ~
+$ENDCMP
+#
+$CMP CP
+D Polarized capacitor
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP DPAD1
+D Dual picoampere diode. TO-78 case. C&S = Case & Substrate
+$ENDCMP
+#
+$CMP GND
+D Power symbol creates a global label with name "GND" , ground
+K power-flag
+$ENDCMP
+#
+$CMP MMBZ27VAL
+D Dual 22V Vwm TVS Diode in SOT23-3
+K diode
+F https://en.wikipedia.org/wiki/Zener_diode
+$ENDCMP
+#
+$CMP NRVTSA4100E
+D Low Vf, Low Leakage, 100V 4A Schottky diode
+K diode Schottky
+F ~
+$ENDCMP
+#
+$CMP OPA192IDR
+D Precision, rail to rail, high impedance input, wide voltage range opamp
+$ENDCMP
+#
+$CMP PJ-102AH
+D DC Barrel Jack, for 5.5mm dia, 2.0mm center pin
+K DC power barrel jack connector
+F ~
+$ENDCMP
+#
+$CMP R
+D Resistor
+K R res resistor
+F ~
+$ENDCMP
+#
+$CMP SMBJ18A
+D Unidirectional 18Vwm TVS diode, SMB package
+K diode
+F ~
+$ENDCMP
+#
+$CMP SMBJ36CA
+D Bidirectional 36Vwm TVS diode, SMB package
+K diode TVS thyrector
+F ~
+$ENDCMP
+#
+$CMP Screw_#2
+D #2-28 thread screw, 0.167" head diameter
+$ENDCMP
+#
+$CMP TPS7A3001DGNR
+D 36V negative linear regulator, 8-MSOP-EP
+$ENDCMP
+#
+$CMP TPS7A4901DGNR
+D 36V linear regulator, 8-MSOP-EP
+$ENDCMP
+#
+#End Doc Library
