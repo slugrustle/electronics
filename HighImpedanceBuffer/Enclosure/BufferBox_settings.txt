@@ -1,6 +1,6 @@
 Application version: 2.11.0.0
-Estimated print time: 8h 58m
-Material usage: 29.99m (71g)
+Estimated print time: 9h 12m
+Material usage: 28.67m (68g)
 Printer: Zortrax M200 Plus
 Profile: Last settings
 Support type: Automatic
@@ -19,7 +19,7 @@ Surface layers Bottom: 5
 Support Lite: No
 Smart bridges: No
 Support offset: Yes
-Max. wall thickness: 2.93 mm
+Max. wall thickness: 3.5 mm
 First layer Density: 100%
 First layer Print speed: 100%
 First layer Flow ratio: 100%

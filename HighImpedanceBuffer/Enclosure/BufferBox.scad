@@ -8,42 +8,112 @@ $fs = 0.05;
 
 $wallthick = 3;
 $bottomthick = 4.06;
+$insertholedia = 3.6;
+$insertholedepth = 5.6;
+$cornerdia = 2*$wallthick+$insertholedia;
+$boardcornerrad = 6;
 $screwblind = 1.68;
 $standoffheight = 2.94;
 $standoff_inner_radius = 1.0;
 $standoff_outer_radius = 2.9;
 $boardwidth = 110;
-$boarddepth = 61;
-$boardoffset = 1;
+$boarddepth = 61.8;
+$boardoffsetfront = 0.5*$cornerdia - 0.8;
+// $boardoffsetback has extra margin because the connectors
+// hang off the front edge of the board by 4mm
+$boardoffsetback = 0.5*$cornerdia + 2.8;
+$boardoffsetside = 0.5*$cornerdia;
 $boardthick = 1.6;
-$insertholedia = 3.6;
-$insertholedepth = 5.6;
-$cornerdia = 2*$wallthick+$insertholedia;
-// Extra $wallthick in $depth is because connectors hang one
-// $wallthick plus one $boardoffset off front edge of board
-$depth = $wallthick + 2*$boardoffset + $boarddepth + $cornerdia;
-$width = 2*$boardoffset + $boardwidth + $cornerdia;
+$depth = $boardoffsetfront + $boardoffsetback + $boarddepth;
+$width = 2*$boardoffsetside + $boardwidth;
 $height = $bottomthick + $standoffheight + $boardthick + 20.02;
-$standoff1_x = 0.5*$cornerdia + $boardoffset + 11;
-$standoff1_y = 0.5*$cornerdia + $boardoffset + 6;
-$standoff2_x = 0.5*$cornerdia + $boardoffset + 31;
-$standoff2_y = 0.5*$cornerdia + $boardoffset + 6;
-$standoff3_x = 0.5*$cornerdia + $boardoffset + 52.3;
-$standoff3_y = 0.5*$cornerdia + $boardoffset + 10;
-$standoff4_x = 0.5*$cornerdia + $boardoffset + 97.7;
-$standoff4_y = 0.5*$cornerdia + $boardoffset + 10;
-$standoff5_x = 0.5*$cornerdia + $boardoffset + 14;
-$standoff5_y = 0.5*$cornerdia + $boardoffset + 56.2;
-$standoff6_x = 0.5*$cornerdia + $boardoffset + 96;
-$standoff6_y = 0.5*$cornerdia + $boardoffset + 56.2;
-$dcjack_x = 0.5*$cornerdia + $boardoffset + 15;
+$standoff1_boardx = 11;
+$standoff1_boardy = 6.8;
+$standoff2_boardx = 31;
+$standoff2_boardy = 6.8;
+$standoff3_boardx = 52.3;
+$standoff3_boardy = 10;
+$standoff4_boardx = 97.7;
+$standoff4_boardy = 10;
+$standoff5_boardx = 14;
+$standoff5_boardy = 57;
+$standoff6_boardx = 96;
+$standoff6_boardy = 57;
+$standoff1_x = $boardoffsetside + $standoff1_boardx;
+$standoff1_y = $boardoffsetfront + $standoff1_boardy;
+$standoff2_x = $boardoffsetside + $standoff2_boardx;
+$standoff2_y = $boardoffsetfront + $standoff2_boardy;
+$standoff3_x = $boardoffsetside + $standoff3_boardx;
+$standoff3_y = $boardoffsetfront + $standoff3_boardy;
+$standoff4_x = $boardoffsetside + $standoff4_boardx;
+$standoff4_y = $boardoffsetfront + $standoff4_boardy;
+$standoff5_x = $boardoffsetside + $standoff5_boardx;
+$standoff5_y = $boardoffsetfront + $standoff5_boardy;
+$standoff6_x = $boardoffsetside + $standoff6_boardx;
+$standoff6_y = $boardoffsetfront + $standoff6_boardy;
+$dcjack_x = $boardoffsetside + 15;
 $dcjack_z = $bottomthick + $standoffheight + $boardthick - 0.62;
 $dcjackwidth = 10;
 $dcjackheight = 12.18;
-$termsocket_x = 0.5*$cornerdia + $boardoffset + 54.18;
+$termsocket_x = $boardoffsetside + 54.18;
 $termsocket_z = $bottomthick + $standoffheight + $boardthick - 0.62;
 $termsocketwidth = 41.64;
 $termsocketheight = 9.66;
+
+// circuit board, for debugging. prepended with *
+// so it doesn't show up during STL export.
+*translate([$boardoffsetside, $boardoffsetfront, $bottomthick+$standoffheight])
+{
+  difference()
+  {
+    cube([$boardwidth, $boarddepth, $boardthick]);
+    cube([$boardcornerrad, 0.8, $boardthick]);
+    translate([$boardwidth-$boardcornerrad, 0, 0])
+    {
+      cube([$boardcornerrad, 0.8, $boardthick]);
+    }
+    translate([0, 0.8, 0])
+    {
+      cylinder(r=$boardcornerrad, h=$boardthick);
+    }
+    translate([$boardwidth, 0.8, 0])
+    {
+      cylinder(r=$boardcornerrad, h=$boardthick);
+    }
+    translate([0, $boarddepth, 0])
+    {
+      cylinder(r=$boardcornerrad, h=$boardthick);
+    }
+    translate([$boardwidth, $boarddepth, 0])
+    {
+      cylinder(r=$boardcornerrad, h=$boardthick);
+    }
+    translate([$standoff1_boardx, $standoff1_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+    translate([$standoff2_boardx, $standoff2_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+    translate([$standoff3_boardx, $standoff3_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+    translate([$standoff4_boardx, $standoff4_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+    translate([$standoff5_boardx, $standoff5_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+    translate([$standoff6_boardx, $standoff6_boardy, 0])
+    {
+      cylinder(r=$standoff_inner_radius, h=$boardthick);
+    }
+  }
+}
 
 difference()
 {
@@ -73,22 +143,22 @@ difference()
     // Walls
     translate([0.5*$cornerdia, 0, 0])
     {
-      cube([$boardwidth+2*$boardoffset, $wallthick, $height]);
+      cube([$width-$cornerdia, $wallthick, $height]);
     }
     
     translate([0, 0.5*$cornerdia, 0])
     {
-      cube([$wallthick, $boarddepth+2*$boardoffset+$wallthick, $height]);
+      cube([$wallthick, $depth-$cornerdia, $height]);
     }
     
     translate([0.5*$cornerdia, $depth - $wallthick, 0])
     {
-      cube([$boardwidth+2*$boardoffset, $wallthick, $height]);
+      cube([$width-$cornerdia, $wallthick, $height]);
     }
     
     translate([$width - $wallthick, 0.5*$cornerdia, 0])
     {
-      cube([$wallthick, $boarddepth+2*$boardoffset+$wallthick, $height]);
+      cube([$wallthick, $depth-$cornerdia, $height]);
     }
     
     // Bottom plate

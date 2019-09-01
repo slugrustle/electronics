@@ -1,18 +1,17 @@
 EESchema Schematic File Version 4
-LIBS:HighImpedanceBuffer-cache
 EELAYER 29 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "High Impedance Buffer"
-Date "2019-08-31"
-Rev "1"
+Date "2019-09-01"
+Rev "2"
 Comp ""
 Comment1 ""
 Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment3 "Rev1: Floating all DPAD1 C&S pins as required by datasheet."
+Comment4 "Rev2: Mechanical update to board only."
 $EndDescr
 $Comp
 L HighImpedanceBuffer:PJ-102AH J1
