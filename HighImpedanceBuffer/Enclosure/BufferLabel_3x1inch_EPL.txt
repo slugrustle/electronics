@@ -1,0 +1,8 @@
+N
+A10,10,0,3,1,1,N,"Dual High Input Impedance 1x Gain Buffer"
+A10,38,0,3,1,1,N,"Input: +/-17.5V MAX. Output: 1.1k Load MIN"
+A10,66,0,3,1,1,N,"Power: 20VAC, 200mA, 2.1mm ID, 5.5mm OD"
+A10,94,0,3,1,1,N,"Terminals: |IN1|COM|OUT1|IN2|COM|OUT2|"
+A10,122,0,3,1,1,N,"Connect IN to COM for unused channel"
+A10,150,0,3,1,1,N,"https://github.com/slugrustle/electronics"
+P1

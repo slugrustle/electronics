@@ -1,6 +1,6 @@
 Application version: 2.11.1.0
-Estimated print time: 9h 20m
-Material usage: 29.51m (70g)
+Estimated print time: 3h 34m
+Material usage: 17.42m (41g)
 Printer: Zortrax M200 Plus
 Profile: Last settings
 Support type: Automatic

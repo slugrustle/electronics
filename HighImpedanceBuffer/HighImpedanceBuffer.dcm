@@ -1,11 +1,5 @@
 EESchema-DOCLIB  Version 2.0
 #
-$CMP 0679L0250-05
-D 250mA 125VDC fast 2410 case fuse
-K fuse
-F ~
-$ENDCMP
-#
 $CMP 1776540
 D 6 position terminal block receptacle with screw threads.
 K connector
@@ -64,6 +58,12 @@ $ENDCMP
 $CMP R
 D Resistor
 K R res resistor
+F ~
+$ENDCMP
+#
+$CMP SF-2410FP0375T-2
+D 375mA 125VDC fast 2410 case fuse
+K fuse
 F ~
 $ENDCMP
 #

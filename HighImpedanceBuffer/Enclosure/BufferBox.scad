@@ -7,14 +7,14 @@ $fa = 3;
 $fs = 0.05;
 
 $wallthick = 3;
-$bottomthick = 4.06;
+$bottomthick = 4.34;
 $insertholedia = 3.6;
 $insertholedepth = 5.6;
 $cornerdia = 2*$wallthick+$insertholedia;
 $boardcornerrad = 6;
-$screwblind = 1.68;
+$screwblind = 0.7;
 $standoffheight = 2.94;
-$standoff_inner_radius = 1.0;
+$standoff_inner_radius = 0.8;
 $standoff_outer_radius = 2.9;
 $boardwidth = 110;
 $boarddepth = 61.8;

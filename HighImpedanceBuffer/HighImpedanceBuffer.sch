@@ -5,13 +5,13 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "High Impedance Buffer"
-Date "2019-09-01"
-Rev "2"
+Date "2019-09-14"
+Rev "3"
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 "Rev1: Floating all DPAD1 C&S pins as required by datasheet."
-Comment4 "Rev2: Mechanical update to board only."
+Comment2 "Rev1: Floating all DPAD1 C&S pins as required by datasheet."
+Comment3 "Rev2: Mechanical update to board only."
+Comment4 "Rev3: Fixing footprint for linear regulator chips. Updating F1 fuse for higher A^2s rating."
 $EndDescr
 $Comp
 L HighImpedanceBuffer:PJ-102AH J1
@@ -23,17 +23,6 @@ F 2 "HighImpedanceBuffer:PJ-102AH" H 900 910 50  0001 C CNN
 F 3 "~" H 900 910 50  0001 C CNN
 	1    850  950 
 	1    0    0    -1  
-$EndComp
-$Comp
-L HighImpedanceBuffer:0679L0250-05 F1
-U 1 1 5D69A331
-P 1550 850
-F 0 "F1" V 1353 850 50  0000 C CNN
-F 1 "0679L0250-05" V 1444 850 50  0000 C CNN
-F 2 "HighImpedanceBuffer:0679L" V 1480 850 50  0001 C CNN
-F 3 "~" H 1550 850 50  0001 C CNN
-	1    1550 850 
-	0    1    1    0   
 $EndComp
 $Comp
 L HighImpedanceBuffer:GND #PWR01
@@ -1419,5 +1408,16 @@ F 2 "HighImpedanceBuffer:MSOP-8-EP" H 1900 5350 50  0001 C CNN
 F 3 "" H 1900 5350 50  0001 C CNN
 	1    1900 5350
 	1    0    0    -1  
+$EndComp
+$Comp
+L HighImpedanceBuffer:SF-2410FP0375T-2 F1
+U 1 1 5D7E69DF
+P 1550 850
+F 0 "F1" V 1353 850 50  0000 C CNN
+F 1 "SF-2410FP0375T-2" V 1444 850 50  0000 C CNN
+F 2 "HighImpedanceBuffer:Fuse_2410" V 1480 850 50  0001 C CNN
+F 3 "~" H 1550 850 50  0001 C CNN
+	1    1550 850 
+	0    1    1    0   
 $EndComp
 $EndSCHEMATC
