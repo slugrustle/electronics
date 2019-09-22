@@ -1,0 +1,86 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 0679L0375-05
+D 375mA 125V fast 2410 case fuse
+K fuse
+F ~
+$ENDCMP
+#
+$CMP 282837-3
+D 3 position terminal block
+K connector
+F ~
+$ENDCMP
+#
+$CMP 282837-4
+D 4 position terminal block
+K connector
+F ~
+$ENDCMP
+#
+$CMP 3570-1331-123
+D COMUS reed relay with internal diode and 12V 1kΩ coil.
+$ENDCMP
+#
+$CMP CP
+D Polarized capacitor
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP CSD_Dual_SOT23
+D Dual SOT23-3L ZIF socket by CSD Technologies
+$ENDCMP
+#
+$CMP GND
+D Power symbol creates a global label with name "GND" , ground
+K power-flag
+$ENDCMP
+#
+$CMP L17HTHAS4F1C
+D 26 pin HD D-sub connector, female, right angle
+K connector
+F ~
+$ENDCMP
+#
+$CMP NRVTSA4100E
+D Low Vf, Low Leakage, 100V 4A Schottky diode
+K diode Schottky
+F ~
+$ENDCMP
+#
+$CMP PDTC123JT
+D NPN bias resistor transistor, base/emitter/collector
+K transistor NPN
+F ~
+$ENDCMP
+#
+$CMP PESD5V0L1UA
+D Unidirectional, low capacitance, low leakage 5Vwm TVS diode, SOT323 package
+K diode
+F ~
+$ENDCMP
+#
+$CMP PJ-102AH
+D DC Barrel Jack, for 5.5mm dia, 2.0mm center pin
+K DC power barrel jack connector
+F ~
+$ENDCMP
+#
+$CMP R
+D Resistor
+K R res resistor
+F ~
+$ENDCMP
+#
+$CMP SMBJ13CA
+D Bidirectional 13Vwm TVS diode, SMB package
+K diode TVS thyrector
+F ~
+$ENDCMP
+#
+$CMP Screw_#2
+D #2-28 thread screw, 0.167" head diameter
+$ENDCMP
+#
+#End Doc Library

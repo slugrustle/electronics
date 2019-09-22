@@ -43,6 +43,7 @@ encompassed in the following footprint files in the HighImpedanceBuffer.pretty
 directory
 - C_1206.kicad_mod
 - C_2220.kicad_mod
+- Fuse_2410.kicad_mod
 - MSOP-8-EP.kicad_mod
 - R_2512.kicad_mod
 - Screw_#2.kicad_mod
