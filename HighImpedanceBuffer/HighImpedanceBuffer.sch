@@ -1,17 +1,18 @@
 EESchema Schematic File Version 4
+LIBS:HighImpedanceBuffer-cache
 EELAYER 29 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "High Impedance Buffer"
-Date "2019-09-14"
-Rev "3"
+Date "2019-10-01"
+Rev "4"
 Comp ""
-Comment1 ""
-Comment2 "Rev1: Floating all DPAD1 C&S pins as required by datasheet."
-Comment3 "Rev2: Mechanical update to board only."
-Comment4 "Rev3: Fixing footprint for linear regulator chips. Updating F1 fuse for higher A^2s rating."
+Comment1 "Rev1: Floating all DPAD1 C&S pins as required by datasheet."
+Comment2 "Rev2: Mechanical update to board only."
+Comment3 "Rev3: Fixing footprint for linear regulator chips. Updating F1 fuse for higher A^2s rating."
+Comment4 "Rev4: Resistors now 1206 & 0805. Oscillation fix: R11, R13 to 2.7k, added C19, C20."
 $EndDescr
 $Comp
 L HighImpedanceBuffer:PJ-102AH J1
@@ -142,7 +143,7 @@ U 1 1 5D6A15B9
 P 3300 850
 F 0 "R5" V 3200 850 50  0000 C CNN
 F 1 "2.2" V 3300 850 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 3230 850 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 3230 850 50  0001 C CNN
 F 3 "~" H 3300 850 50  0001 C CNN
 	1    3300 850 
 	0    1    1    0   
@@ -153,7 +154,7 @@ U 1 1 5D6A1CB8
 P 3300 1900
 F 0 "R6" V 3200 1900 50  0000 C CNN
 F 1 "2.2" V 3300 1900 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 3230 1900 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 3230 1900 50  0001 C CNN
 F 3 "~" H 3300 1900 50  0001 C CNN
 	1    3300 1900
 	0    1    1    0   
@@ -678,7 +679,7 @@ U 1 1 5D71A049
 P 6450 1500
 F 0 "R9" V 6350 1500 50  0000 C CNN
 F 1 "1k" V 6450 1500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6380 1500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 6380 1500 50  0001 C CNN
 F 3 "~" H 6450 1500 50  0001 C CNN
 	1    6450 1500
 	0    1    1    0   
@@ -723,7 +724,7 @@ U 1 1 5D73C0E5
 P 4900 1500
 F 0 "R7" V 4800 1500 50  0000 C CNN
 F 1 "10k" V 4900 1500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 4830 1500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 4830 1500 50  0001 C CNN
 F 3 "~" H 4900 1500 50  0001 C CNN
 	1    4900 1500
 	0    1    1    0   
@@ -741,7 +742,7 @@ U 1 1 5D748B88
 P 6900 1400
 F 0 "R12" V 6800 1400 50  0000 C CNN
 F 1 "1k" V 6900 1400 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6830 1400 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 6830 1400 50  0001 C CNN
 F 3 "~" H 6900 1400 50  0001 C CNN
 	1    6900 1400
 	0    1    1    0   
@@ -777,20 +778,20 @@ Wire Wire Line
 $Comp
 L HighImpedanceBuffer:R R11
 U 1 1 5D7663B3
-P 6900 1000
-F 0 "R11" V 6800 1000 50  0000 C CNN
-F 1 "10k" V 6900 1000 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6830 1000 50  0001 C CNN
-F 3 "~" H 6900 1000 50  0001 C CNN
-	1    6900 1000
+P 7150 1000
+F 0 "R11" V 7050 1000 50  0000 C CNN
+F 1 "2.7k" V 7150 1000 50  0000 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 7080 1000 50  0001 C CNN
+F 3 "~" H 7150 1000 50  0001 C CNN
+	1    7150 1000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6750 1000 6700 1000
+	7000 1000 6950 1000
 Connection ~ 6700 1000
 Wire Wire Line
-	7050 1000 7250 1000
-Text Label 7250 1000 2    50   ~ 0
+	7300 1000 7350 1000
+Text Label 7600 1000 2    50   ~ 0
 OUT1
 Text Label 5450 800  0    50   ~ 0
 18V+
@@ -806,7 +807,7 @@ U 1 1 5D77F9F7
 P 9050 1500
 F 0 "R15" V 8950 1500 50  0000 C CNN
 F 1 "20" V 9050 1500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 8980 1500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 8980 1500 50  0001 C CNN
 F 3 "~" H 9050 1500 50  0001 C CNN
 	1    9050 1500
 	0    1    1    0   
@@ -848,7 +849,7 @@ U 1 1 5D791382
 P 9550 1500
 F 0 "R17" V 9450 1500 50  0000 C CNN
 F 1 "100" V 9550 1500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 9480 1500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 9480 1500 50  0001 C CNN
 F 3 "~" H 9550 1500 50  0001 C CNN
 	1    9550 1500
 	0    1    1    0   
@@ -1024,7 +1025,7 @@ U 1 1 5D7BBEC8
 P 6450 3500
 F 0 "R10" V 6350 3500 50  0000 C CNN
 F 1 "1k" V 6450 3500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6380 3500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 6380 3500 50  0001 C CNN
 F 3 "~" H 6450 3500 50  0001 C CNN
 	1    6450 3500
 	0    1    1    0   
@@ -1069,7 +1070,7 @@ U 1 1 5D7BBEF5
 P 4900 3500
 F 0 "R8" V 4800 3500 50  0000 C CNN
 F 1 "10k" V 4900 3500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 4830 3500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 4830 3500 50  0001 C CNN
 F 3 "~" H 4900 3500 50  0001 C CNN
 	1    4900 3500
 	0    1    1    0   
@@ -1087,7 +1088,7 @@ U 1 1 5D7BBF03
 P 6900 3400
 F 0 "R14" V 6800 3400 50  0000 C CNN
 F 1 "1k" V 6900 3400 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6830 3400 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 6830 3400 50  0001 C CNN
 F 3 "~" H 6900 3400 50  0001 C CNN
 	1    6900 3400
 	0    1    1    0   
@@ -1123,20 +1124,20 @@ Wire Wire Line
 $Comp
 L HighImpedanceBuffer:R R13
 U 1 1 5D7BBF2D
-P 6900 3000
-F 0 "R13" V 6800 3000 50  0000 C CNN
-F 1 "10k" V 6900 3000 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 6830 3000 50  0001 C CNN
-F 3 "~" H 6900 3000 50  0001 C CNN
-	1    6900 3000
+P 7200 3000
+F 0 "R13" V 7100 3000 50  0000 C CNN
+F 1 "2.7k" V 7200 3000 50  0000 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 7130 3000 50  0001 C CNN
+F 3 "~" H 7200 3000 50  0001 C CNN
+	1    7200 3000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6750 3000 6700 3000
+	7050 3000 7000 3000
 Connection ~ 6700 3000
 Wire Wire Line
-	7050 3000 7250 3000
-Text Label 7250 3000 2    50   ~ 0
+	7350 3000 7400 3000
+Text Label 7650 3000 2    50   ~ 0
 OUT2
 Text Label 5450 2800 0    50   ~ 0
 18V+
@@ -1152,7 +1153,7 @@ U 1 1 5D7BBF3F
 P 9050 3500
 F 0 "R16" V 8950 3500 50  0000 C CNN
 F 1 "20" V 9050 3500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 8980 3500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_0805_HandSoldering" V 8980 3500 50  0001 C CNN
 F 3 "~" H 9050 3500 50  0001 C CNN
 	1    9050 3500
 	0    1    1    0   
@@ -1194,7 +1195,7 @@ U 1 1 5D7BBF62
 P 9550 3500
 F 0 "R18" V 9450 3500 50  0000 C CNN
 F 1 "100" V 9550 3500 50  0000 C CNN
-F 2 "HighImpedanceBuffer:R_2512" V 9480 3500 50  0001 C CNN
+F 2 "HighImpedanceBuffer:R_1206" V 9480 3500 50  0001 C CNN
 F 3 "~" H 9550 3500 50  0001 C CNN
 	1    9550 3500
 	0    1    1    0   
@@ -1420,4 +1421,54 @@ F 3 "~" H 1550 850 50  0001 C CNN
 	1    1550 850 
 	0    1    1    0   
 $EndComp
+$Comp
+L HighImpedanceBuffer:C C19
+U 1 1 5D935838
+P 7150 750
+F 0 "C19" V 7000 750 50  0000 C CNN
+F 1 "TBD" V 7050 900 50  0000 C CNN
+F 2 "HighImpedanceBuffer:C_0603_HandSoldering" H 7188 600 50  0001 C CNN
+F 3 "~" H 7150 750 50  0001 C CNN
+	1    7150 750 
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7000 750  6950 750 
+Wire Wire Line
+	6950 750  6950 1000
+Connection ~ 6950 1000
+Wire Wire Line
+	6950 1000 6700 1000
+Wire Wire Line
+	7300 750  7350 750 
+Wire Wire Line
+	7350 750  7350 1000
+Connection ~ 7350 1000
+Wire Wire Line
+	7350 1000 7600 1000
+$Comp
+L HighImpedanceBuffer:C C20
+U 1 1 5D979632
+P 7200 2750
+F 0 "C20" V 7050 2750 50  0000 C CNN
+F 1 "TBD" V 7100 2900 50  0000 C CNN
+F 2 "HighImpedanceBuffer:C_0603_HandSoldering" H 7238 2600 50  0001 C CNN
+F 3 "~" H 7200 2750 50  0001 C CNN
+	1    7200 2750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7050 2750 7000 2750
+Wire Wire Line
+	7000 2750 7000 3000
+Connection ~ 7000 3000
+Wire Wire Line
+	7000 3000 6700 3000
+Wire Wire Line
+	7350 2750 7400 2750
+Wire Wire Line
+	7400 2750 7400 3000
+Connection ~ 7400 3000
+Wire Wire Line
+	7400 3000 7650 3000
 $EndSCHEMATC
