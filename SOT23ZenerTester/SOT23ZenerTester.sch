@@ -1,18 +1,17 @@
 EESchema Schematic File Version 4
-LIBS:SOT23ZenerTester-cache
 EELAYER 29 0
 EELAYER END
 $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "SOT23 Zener Tester"
-Date "2019-09-21"
-Rev "0"
+Date "2019-10-02"
+Rev "1"
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "Rev1: Fixing J2 & J4 footprints"
 $EndDescr
 $Comp
 L SOT23ZenerTester:PJ-102AH J1
@@ -200,7 +199,7 @@ F 3 "" H 2650 2500 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text Notes 2300 3400 0    50   ~ 0
-J? Labels:\nPin1: Drive-\nPin2: Sense-\nPin3: Sense+\nPin4: Drive+
+J2 Labels:\nPin1: Drive-\nPin2: Sense-\nPin3: Sense+\nPin4: Drive+
 Text Label 2600 2700 0    50   ~ 0
 VSWEEP
 $Comp
@@ -239,7 +238,7 @@ Wire Wire Line
 Text Label 2950 3800 2    50   ~ 0
 Z_Cathode
 Text Notes 2300 4650 0    50   ~ 0
-J? Labels:\nPin1: Zener Cathode\nPin2: GND\nPin3: Shield
+J4 Labels:\nPin1: Zener Cathode\nPin2: GND\nPin3: Shield
 $Comp
 L SOT23ZenerTester:R R1
 U 1 1 5D8C6F5B
