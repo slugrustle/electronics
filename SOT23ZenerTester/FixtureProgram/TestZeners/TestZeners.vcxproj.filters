@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dln.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_adc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_boot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_generic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_gpio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_i2c_master.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_i2c_slave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_led.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_pls_cnt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_pwm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_restrictions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_results.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_sdio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_spi_flash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_spi_master.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_spi_slave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_spi_slave_sync.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dln_uart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parser_helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parse_config_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCPI_helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCPI_transactions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicWorkbook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IttyZip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="dln.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TestZeners.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parse_config_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parser_helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SCPI_helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SCPI_transactions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicWorkbook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IttyZip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
