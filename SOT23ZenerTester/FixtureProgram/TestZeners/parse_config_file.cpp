@@ -56,6 +56,7 @@ test_config_t parse_config_file(std::ifstream &input_stream)
   }
 
   bool any_read_errors = false;
+  bool found_min_valid_zener_current = false;
   std::array<bool, NUM_SERIAL_DEVICES> found_com_ports;
   std::fill(found_com_ports.begin(), found_com_ports.end(), false);
   std::array<bool, NUM_SERIAL_DEVICES> found_baud_rates;
@@ -74,9 +75,18 @@ test_config_t parse_config_file(std::ifstream &input_stream)
 
   std::string line;
   size_t jLine = 0u;
+  const std::string byte_order_mark = u8"\uFEFF";
   const std::set<char> token_delimeters = {',', ' ', '\n', '\r', '\t', '\f', '\v'};
   while (std::getline(input_stream, line))
   {
+    /* If the first line begins with the UTF8 Byte Order Mark, remove it. */
+    if (jLine == 0u && 
+        line.size() >= byte_order_mark.size() &&
+        line.substr(0u, byte_order_mark.size()).compare(byte_order_mark) == 0)
+    {
+      line = line.substr(byte_order_mark.size());
+    }
+
     jLine++;
     std::vector<std::string> tokens = tokenize(line, token_delimeters);
     if (!tokens.empty() && tokens.front().at(0) != '#')
@@ -280,6 +290,40 @@ test_config_t parse_config_file(std::ifstream &input_stream)
         continue;
       }
 
+      if (case_insensitive_same(first_token, "MIN_VALID_ZENER_CURRENT"))
+      {
+        if (found_min_valid_zener_current)
+        {
+          std::printf("Warning: redefinition of MIN_VALID_ZENER_CURRENT on line %zu of configuration file.\n", jLine);
+        }
+        else if (tokens.size() > 1u)
+        {
+          found_min_valid_zener_current = true;
+
+          if (tokens.size() > 2u)
+          {
+            std::printf("Warning: more than one argument to MIN_VALID_ZENER_CURRENT on line %zu of configuration file.\n", jLine);
+          }
+
+          std::string &second_token = tokens.at(1);
+          double min_valid_current_val = parse_double(second_token);
+          if (std::isnan(min_valid_current_val) ||
+              min_valid_current_val < MIN_VALID_ZENER_CURRENT_LOWER_LIMIT ||
+              min_valid_current_val > MIN_VALID_ZENER_CURRENT_UPPER_LIMIT)
+          {
+            std::printf("Error: non-number or <%.1e A or >%.1e A for MIN_VALID_ZENER_CURRENT on line %zu of configuration file.\n", 
+                        MIN_VALID_ZENER_CURRENT_LOWER_LIMIT, MIN_VALID_ZENER_CURRENT_UPPER_LIMIT, jLine);
+            any_read_errors = true;
+          }
+          else
+          {
+            test_config.min_valid_zener_current = min_valid_current_val;
+          }
+        }
+
+        continue;
+      }
+
       if (case_insensitive_same(first_token, "ZENERS_INSTALLED"))
       {
         if (found_zeners_installed)
@@ -399,15 +443,22 @@ test_config_t parse_config_file(std::ifstream &input_stream)
               }
 
               std::string &second_token = tokens.at(1);
-              double current_val = parse_double(second_token);
-              if (std::isnan(current_val) || current_val < MAX_CURRENT_LOWER_LIMIT || current_val > MAX_CURRENT_UPPER_LIMIT)
+              if (case_insensitive_same(second_token, "POWER_LIMITED"))
               {
-                std::printf("Error: non-number or <%.1e A or >%.1e A for %s on line %zu of configuration file.\n", MAX_CURRENT_LOWER_LIMIT, MAX_CURRENT_UPPER_LIMIT, field_name.c_str(), jLine);
-                any_read_errors = true;
+                test_config.max_zener_currents.at(jSocket) = std::numeric_limits<double>::infinity();
               }
               else
               {
-                test_config.max_zener_currents.at(jSocket) = current_val;
+                double current_val = parse_double(second_token);
+                if (std::isnan(current_val) || current_val < MAX_CURRENT_LOWER_LIMIT || current_val > MAX_CURRENT_UPPER_LIMIT)
+                {
+                  std::printf("Error: non-number or <%.1e A or >%.1e A for %s on line %zu of configuration file.\n", MAX_CURRENT_LOWER_LIMIT, MAX_CURRENT_UPPER_LIMIT, field_name.c_str(), jLine);
+                  any_read_errors = true;
+                }
+                else
+                {
+                  test_config.max_zener_currents.at(jSocket) = current_val;
+                }
               }
             }
           }
@@ -549,6 +600,12 @@ test_config_t parse_config_file(std::ifstream &input_stream)
       something_missing = true;
       std::printf("Error: configuration file is missing %s_PARITY definition.\n", SERIAL_DEVICE_NAMES.at(jDevice).c_str());
     }
+  }
+
+  if (!found_min_valid_zener_current)
+  {
+    something_missing = true;
+    std::printf("Error: configuration file is missing MIN_VALID_ZENER_CURRENT definition.\n");
   }
 
   if (!found_zeners_installed)

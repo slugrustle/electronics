@@ -30,11 +30,6 @@
 #include "BasicWorkbook.h"
 
 /**
- * Constants
- */
-const double MIN_RECORDABLE_CURRENT = 100.0e-9;
-
-/**
  * Globals
  */
 HDLN diolan_handle;
@@ -889,7 +884,8 @@ int main (int argc, char** argv)
           this_itr_zener_voltage_at_max_current = dvm_zener_voltage;
         }
 
-        if (calc_zener_current >= MIN_RECORDABLE_CURRENT && calc_zener_current >= 1.01 * prev_itr_max_zener_current)
+        if (calc_zener_current >= test_config.min_valid_zener_current &&
+            calc_zener_current >= 1.01 * prev_itr_max_zener_current)
         {
           this_sheet.add_number_cell(sheet_row, 1u, test_voltage, BasicWorkbook::NumberFormat::FIX3);
           this_sheet.add_number_cell(sheet_row, 2u, meas_psu_voltage, BasicWorkbook::NumberFormat::FIX6);
@@ -949,6 +945,8 @@ int main (int argc, char** argv)
     exit_cleanup();
     return EXIT_FAILURE;
   }
+
+  std::printf("Test finished successfully.\n");
   
   exit_cleanup();
   return EXIT_SUCCESS;

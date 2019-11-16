@@ -25,6 +25,12 @@ DMM_PARITY NONE
 # that device will be used and this field will be ignored.
 DIOLAN_SERIAL_NUMBER
 
+# MIN_VALID_ZENER_CURRENT is the smallest calculated Zener
+# current that will be considered a valid reading and saved
+# to the output results file. Must be on the range 0.000000001
+# to 10.0 Amps, which is 1nA to 10A.
+MIN_VALID_ZENER_CURRENT 0.00000002
+
 # ZENERS_INSTALLED accepts at least one and at most all of
 # J5L J5R J6L J6R J7L J7R J8L J8R J9L J9R
 ZENERS_INSTALLED J5L J5R J6L J6R J7L J7R J8L J8R J9L J9R
@@ -46,11 +52,11 @@ VOLTAGE_STEP_J9R 0.1
 # Set to POWER_LIMITED to limit current based on Zener Diode
 # power dissipation only. Otherwise, set on the range
 # 0.000001 to 100.0 Amps.
-MAX_CURRENT_J5L 0.01
-MAX_CURRENT_J5R 0.01
-MAX_CURRENT_J6L 0.01
-MAX_CURRENT_J6R 0.01
-MAX_CURRENT_J7L 0.01
+MAX_CURRENT_J5L POWER_LIMITED
+MAX_CURRENT_J5R POWER_LIMITED
+MAX_CURRENT_J6L POWER_LIMITED
+MAX_CURRENT_J6R POWER_LIMITED
+MAX_CURRENT_J7L POWER_LIMITED
 MAX_CURRENT_J7R 0.00001
 MAX_CURRENT_J8L 0.00001
 MAX_CURRENT_J8R 0.00001

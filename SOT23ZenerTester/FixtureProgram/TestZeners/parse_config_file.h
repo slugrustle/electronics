@@ -24,6 +24,9 @@
 #include <Windows.h>
 #include <WinBase.h>
 
+/**
+ * Constants.
+ */
 const size_t NUM_SERIAL_DEVICES = 2u;
 const size_t NUM_ZENER_SOCKETS = 10u;
 const size_t NUM_FIXTURE_RESISTORS = 5u;
@@ -33,6 +36,8 @@ const double VOLTAGE_STEP_LOWER_LIMIT = 1.0e-3;
 const double VOLTAGE_STEP_UPPER_LIMIT = 5.0;
 const double MAX_CURRENT_LOWER_LIMIT = 1.0e-6;
 const double MAX_CURRENT_UPPER_LIMIT = 100.0;
+const double MIN_VALID_ZENER_CURRENT_LOWER_LIMIT = 1.0e-9;
+const double MIN_VALID_ZENER_CURRENT_UPPER_LIMIT = 10.0;
 
 /**
 * Pin number definitions come from J5 pinout for Diolan DLN-4M
@@ -97,6 +102,7 @@ typedef struct
   uint32_t num_gpio_required;
   uint32_t diolan_serial_number;
   bool diolan_serial_present;
+  double min_valid_zener_current;
   std::array<std::string, NUM_SERIAL_DEVICES> com_ports;
   std::array<std::string, NUM_SERIAL_DEVICES> com_port_printables;
   std::array<BaudRate, NUM_SERIAL_DEVICES> baud_rates;
