@@ -1,0 +1,69 @@
+# PSU_COM_PORT accepts a single argument of the form COM1, COM2, COM3, ..., COM255
+PSU_COM_PORT COM1
+
+# PSU_BAUD_RATE accepts one of the following: 4800 9600 19200 38400 57600 115200
+# Make sure your supply has the same setting
+PSU_BAUD_RATE 115200
+
+# PSU_PARITY accepts one of the following: EVEN ODD NONE
+PSU_PARITY NONE
+
+# DMM_COM_PORT accepts a single argument of the form COM1, COM2, COM3, ..., COM255
+DMM_COM_PORT COM4
+
+# DMM_BAUD_RATE accepts one of the following: 4800 9600 19200 38400 57600 115200
+# Make sure your meter has the same setting
+DMM_BAUD_RATE 115200
+
+# DMM_PARITY accepts one of the following: EVEN ODD NONE
+DMM_PARITY NONE
+
+# DIOLAN_SERIAL_NUMBER specifies the Diolan device to use in the
+# case that more than one Diolan device is connected to the test
+# computer, in which case it is a required field.
+# If only one Diolan device is attached to the test computer,
+# that device will be used and this field will be ignored.
+DIOLAN_SERIAL_NUMBER
+
+# ZENERS_INSTALLED accepts at least one and at most all of
+# J5L J5R J6L J6R J7L J7R J8L J8R J9L J9R
+ZENERS_INSTALLED J5L J5R J6L J6R J7L J7R J8L J8R J9L J9R
+
+# The voltages and resistances below are set to get ~1uA
+# Zener Current from 13V nominal Zeners in sockets J5L through
+# J7L and the same from 18V nominal Zeners in sockets J7R
+# through J9R.
+
+# TEST_VOLTAGE is the voltage setting of the power supply before
+# the Zener Socket Relay is closed. Make sure this is within the
+# valid output range of your power supply. Additionally, this value
+# must be on the range 0.001 to 1000.0 Volts.
+#
+# WARNING: the Single Shot Test does not attempt to estimate or
+# limit power or current levels. Make sure the fixture resistors,
+# fixture relays, and the Zener diodes under test will not be
+# damaged by the applied voltage.
+TEST_VOLTAGE_J5L 6.1
+TEST_VOLTAGE_J5R 6.1
+TEST_VOLTAGE_J6L 6.1
+TEST_VOLTAGE_J6R 6.1
+TEST_VOLTAGE_J7L 6.1
+TEST_VOLTAGE_J7R 16
+TEST_VOLTAGE_J8L 16
+TEST_VOLTAGE_J8R 16
+TEST_VOLTAGE_J9L 16
+TEST_VOLTAGE_J9R 16
+
+# RESISTOR specifies which fixture resistor should be used
+# for the Single Shot Test. Valid resistor designators are
+# 100R, 1K, 10K, 100K, and 1M.
+RESISTOR_J5L 1M
+RESISTOR_J5R 1M
+RESISTOR_J6L 1M
+RESISTOR_J6R 1M
+RESISTOR_J7L 1M
+RESISTOR_J7R 1M
+RESISTOR_J8L 1M
+RESISTOR_J8R 1M
+RESISTOR_J9L 1M
+RESISTOR_J9R 1M

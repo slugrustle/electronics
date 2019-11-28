@@ -15,15 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="parse_config_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\office_open_xml\BasicWorkbook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\office_open_xml\IttyZip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Diolan\dln.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,20 +81,16 @@
     <ClInclude Include="..\SCPI\SCPI_transactions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="parse_config_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestZeners.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parse_config_file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\office_open_xml\BasicWorkbook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\office_open_xml\IttyZip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <Library Include="..\Diolan\dln.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\Parsing\parser_helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,10 +100,11 @@
     <ClCompile Include="..\SCPI\SCPI_transactions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Diolan\dln.lib">
-      <Filter>Resource Files</Filter>
-    </Library>
+    <ClCompile Include="parse_config_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleShot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

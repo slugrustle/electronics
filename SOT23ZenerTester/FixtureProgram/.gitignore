@@ -5,3 +5,6 @@ Debug
 TestZeners/Debug
 Release/TestZeners.pdb
 TestZeners/Release
+SingleShot/Debug
+Release/SingleShot.pdb
+SingleShot/Release

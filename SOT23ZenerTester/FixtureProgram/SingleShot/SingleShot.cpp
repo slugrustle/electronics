@@ -1,5 +1,5 @@
 /**
- * TestZeners.cpp
+ * SingleShot.cpp
  * 
  * TODO: proper file header
  * 
@@ -28,7 +28,6 @@
 #include "parse_config_file.h"
 #include "SCPI_helpers.h"
 #include "SCPI_transactions.h"
-#include "BasicWorkbook.h"
 
 /**
  * Globals
@@ -43,9 +42,6 @@ bool psu_modified = false;
 HANDLE dmm_com_port_handle;
 bool dmm_com_port_opened = false;
 bool dmm_modified = false;
-BasicWorkbook::Workbook workbook;
-std::string workbook_filename;
-bool workbook_started = false;
 
 /**
  * Clean up function.
@@ -103,18 +99,6 @@ void exit_cleanup(void)
   {
     CloseHandle(dmm_com_port_handle);
   }
-
-  if (workbook_started)
-  {
-    try
-    {
-      workbook.publish(workbook_filename);
-    }
-    catch (std::exception &e)
-    {
-      std::printf("Error creating workbook file %s.\n%s\n\n", workbook_filename.c_str(), e.what());
-    }
-  }
 }
 
 /**
@@ -134,11 +118,11 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 int main (int argc, char** argv)
 {
   std::printf("Usage:\n\n");
-  std::printf(".\\TestZeners.exe config_file.txt output_file.xlsx\n\n");
+  std::printf(".\\SingleShot.exe config_file.txt\n\n");
 
-  if (argc != 3)
+  if (argc != 2)
   {
-    std::printf("This program requires exactly two input arguments.\n\n");
+    std::printf("This program requires exactly one input argument.\n\n");
     exit_cleanup();
     return EXIT_FAILURE;
   }
@@ -166,8 +150,6 @@ int main (int argc, char** argv)
     exit_cleanup();
     return EXIT_FAILURE;
   }
-
-  workbook_filename = argv[2];
 
   DLN_RESULT dln_res;
 
@@ -405,9 +387,8 @@ int main (int argc, char** argv)
 
   std::printf("DMM ID string: %s\n", dmm_id.c_str());
   std::printf("Warning: You must manually set the Measurement Integration Time\n");
-  std::printf("         to 10 NPLC as this setting is not accessible over SCPI.\n");
-  std::printf("         Nearest options are 0.2 (not as accurate) and 100 (very\n");
-  std::printf("         slow).\n\n");
+  std::printf("         to 0.06 NPLC, as this is not presently implemented in\n");
+  std::printf("         software.\n\n");
 
   PSC_status psc_ret = set_PSC(dmm_com_port_handle);
   if (psc_ret == PSC_status::COM_ERROR)
@@ -422,7 +403,7 @@ int main (int argc, char** argv)
     std::printf("         continuing anyway.\n\n");
   }
 
-  KnownStateStatus known_state_ret = set_known_DMM_state(dmm_com_port_handle, true);
+  KnownStateStatus known_state_ret = set_known_DMM_state(dmm_com_port_handle, false);
   if (known_state_ret != KnownStateStatus::ALL_OK)
   {
     std::printf("Error putting DMM into known state.\n\n");
@@ -606,22 +587,10 @@ int main (int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  /* Determine max current based on resistor power. */
-  double max_current = 0.0;
-  for (size_t jResistor = 0u; jResistor < NUM_FIXTURE_RESISTORS; jResistor++)
-  {
-    max_current = std::max(max_current, std::sqrt(test_config.max_resistor_powers.at(jResistor) / NOMINAL_RESISTANCES.at(jResistor)));
-  }
-  max_current *= 1.1;
-  max_current = 0.001 * std::round(1000.0 * max_current);
-
-  set_ret = set_PSU_current(psu_com_port_handle, max_current);
-  if (set_ret != SetDataStatus::ALL_OK)
-  {
-    std::printf("Error while setting PSU current to %.3fA.\n\n", max_current);
-    exit_cleanup();
-    return EXIT_FAILURE;
-  }
+  /**
+   * TODO: bring back resistor power settings to limit max PSU
+   * current using built in protection.
+   */
 
   set_ret = set_PSU_sense(psu_com_port_handle, true);
   if (set_ret != SetDataStatus::ALL_OK)
@@ -634,7 +603,9 @@ int main (int argc, char** argv)
   /**
    * The main loop.
    *
-   * Iterate over installed Zeners and get the Vz/Iz curve for each.
+   * Iterate over installed Zeners and get a single Vz/Iz value for
+   * each at the configured PSU voltage level. Turn the Zener Socket
+   * Relay on and off as quickly as possible to limit self heating.
    */
   for (std::set<ZenerSocket>::iterator zenitr = test_config.zeners_installed.begin();
        zenitr != test_config.zeners_installed.end();
@@ -649,23 +620,8 @@ int main (int argc, char** argv)
 
     ZenerSocket this_zener = *zenitr;
 
-    BasicWorkbook::Sheet &this_sheet = workbook.addSheet(ZENER_SOCKET_NAMES.at(static_cast<size_t>(this_zener)));
-    uint32_t sheet_row = 1u;
-    this_sheet.add_string_cell(sheet_row, 1u, "PSU Voltage Setting (V)");
-    this_sheet.set_column_width(1u, 20.005);
-    this_sheet.add_string_cell(sheet_row, 2u, "Measured PSU Voltage (V)");
-    this_sheet.set_column_width(2u, 22.625);
-    this_sheet.add_string_cell(sheet_row, 3u, "Measured Zener Voltage (V)");
-    this_sheet.set_column_width(3u, 24.125);
-    this_sheet.add_string_cell(sheet_row, 4u, "Nominal Test Resistance (Ohms)");
-    this_sheet.set_column_width(4u, 28.005);
-    this_sheet.add_string_cell(sheet_row, 5u, "Calculated Zener Current (A)");
-    this_sheet.set_column_width(5u, 24.375);
-    sheet_row++;
-    workbook_started = true;
-
     std::printf("Testing Zener Socket %s\n", ZENER_SOCKET_NAMES.at(static_cast<size_t>(this_zener)).c_str());
-    std::printf("PSU Voltage Setting (V),Measured PSU Voltage (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)\n");
+    std::printf("PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)\n");
 
     /* Make sure the PSU output is off. */
     set_ret = set_PSU_output(psu_com_port_handle, false);
@@ -674,6 +630,27 @@ int main (int argc, char** argv)
       std::printf("Error while turning PSU output off.\n\n");
       exit_cleanup();
       return EXIT_FAILURE;
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    /* Open all resistor relays. */
+    for (size_t jResistor = 0u; jResistor < NUM_FIXTURE_RESISTORS; jResistor++)
+    {
+      dln_res = DlnGpioPinSetOutVal(diolan_handle, RESISTOR_RELAY_PIN.at(jResistor), 0u);
+      if (!DLN_SUCCEEDED(dln_res))
+      {
+        std::printf("Error: Could not set the level of GPIO pin %u.\n\n", RESISTOR_RELAY_PIN.at(jResistor));
+      }
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    /* Close the relay for the indicated fixture resistor. */
+    dln_res = DlnGpioPinSetOutVal(diolan_handle, RESISTOR_RELAY_PIN.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener)))), 1u);
+    if (!DLN_SUCCEEDED(dln_res))
+    {
+      std::printf("Error: Could not set the level of GPIO pin %u.\n\n", RESISTOR_RELAY_PIN.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener)))));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -690,6 +667,25 @@ int main (int argc, char** argv)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+    /* Set configured PSU voltage and turn output on. */
+    set_ret = set_PSU_voltage(psu_com_port_handle, test_config.test_voltages.at(static_cast<size_t>(this_zener)));
+    if (set_ret != SetDataStatus::ALL_OK)
+    {
+      std::printf("Error while setting PSU voltage to %.3fV.\n\n", test_config.test_voltages.at(static_cast<size_t>(this_zener)));
+      exit_cleanup();
+      return EXIT_FAILURE;
+    }
+
+    set_ret = set_PSU_output(psu_com_port_handle, true);
+    if (set_ret != SetDataStatus::ALL_OK)
+    {
+      std::printf("Error while turning PSU output on.\n\n");
+      exit_cleanup();
+      return EXIT_FAILURE;
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
     /* Close the relay for the one Zener under test. */
     dln_res = DlnGpioPinSetOutVal(diolan_handle, ZENER_RELAY_PIN.at(static_cast<size_t>(this_zener)), 1u);
     if (!DLN_SUCCEEDED(dln_res))
@@ -697,254 +693,38 @@ int main (int argc, char** argv)
       std::printf("Error: Could not set the level of GPIO pin %u.\n\n", ZENER_RELAY_PIN.at(static_cast<size_t>(this_zener)));
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     /**
-     * Iterate over fixture resistors from highest to lowest value
-     * in order to test Zener currents in increasing fashion.
+     * Take & record measurements.
+     * PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
      */
-    double prev_itr_max_zener_current = 0.0;
-    double this_itr_max_zener_current = 0.0;
-    double prev_itr_zener_voltage_at_max_current = 0.0;
-    double this_itr_zener_voltage_at_max_current = 0.0;
-    size_t jResistor = NUM_FIXTURE_RESISTORS;
-    do
+    double dvm_zener_voltage = 0.0;
+    double calc_zener_current = 0.0;
+
+    get_ret = meas_DMM_DCV(dmm_com_port_handle, dvm_zener_voltage);
+    if (get_ret != GetDataStatus::ALL_OK && get_ret != GetDataStatus::COM_ERROR)
     {
-      if (ctrl_c_happened)
-      {
-        std::printf("Detected Ctrl + C; Exiting.\n\n");
-        exit_cleanup();
-        return EXIT_SUCCESS;
-      }
+      /* try a second time if ZERO_DATA or UNRECOGNIZED_RESPONSE */
+      get_ret = meas_DMM_DCV(dmm_com_port_handle, dvm_zener_voltage);
+    }
+    if (get_ret != GetDataStatus::ALL_OK)
+    {
+      std::printf("Error retrieving DMM DC Voltage measurement.\n\n");
+      exit_cleanup();
+      return EXIT_FAILURE;
+    }
 
-      jResistor--;
-      if (this_itr_max_zener_current >= prev_itr_max_zener_current)
-      {
-        prev_itr_max_zener_current = this_itr_max_zener_current;
-        prev_itr_zener_voltage_at_max_current = this_itr_zener_voltage_at_max_current;
-      }
-      this_itr_max_zener_current = 0.0;
-      this_itr_zener_voltage_at_max_current = 0.0;
+    calc_zener_current = (test_config.test_voltages.at(static_cast<size_t>(this_zener)) - dvm_zener_voltage) / NOMINAL_RESISTANCES.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener))));
 
-      /* Make sure the PSU output is off. */
-      set_ret = set_PSU_output(psu_com_port_handle, false);
-      if (set_ret != SetDataStatus::ALL_OK)
-      {
-        std::printf("Error while turning PSU output off.\n\n");
-        exit_cleanup();
-        return EXIT_FAILURE;
-      }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-      /* Open all resistor relays. */
-      for (size_t jResistor = 0u; jResistor < NUM_FIXTURE_RESISTORS; jResistor++)
-      {
-        dln_res = DlnGpioPinSetOutVal(diolan_handle, RESISTOR_RELAY_PIN.at(jResistor), 0u);
-        if (!DLN_SUCCEEDED(dln_res))
-        {
-          std::printf("Error: Could not set the level of GPIO pin %u.\n\n", RESISTOR_RELAY_PIN.at(jResistor));
-        }
-      }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-      /* Close the relay for the indicated fixture resistor. */
-      dln_res = DlnGpioPinSetOutVal(diolan_handle, RESISTOR_RELAY_PIN.at(jResistor), 1u);
-      if (!DLN_SUCCEEDED(dln_res))
-      {
-        std::printf("Error: Could not set the level of GPIO pin %u.\n\n", RESISTOR_RELAY_PIN.at(jResistor));
-      }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-      
-      /**
-       * Jump to highest current level tested by previous fixture
-       * resistor right away if it skips some voltage steps and
-       * won't overload the fixture resistor or exceed the max
-       * zener test current.
-       */
-      bool revert_to_min_voltage = true;
-      double test_voltage = test_config.voltage_steps.at(static_cast<size_t>(this_zener))
-                            * std::floor((prev_itr_zener_voltage_at_max_current + NOMINAL_RESISTANCES.at(jResistor) * prev_itr_max_zener_current) 
-                                         / test_config.voltage_steps.at(static_cast<size_t>(this_zener)))
-                            - test_config.voltage_steps.at(static_cast<size_t>(this_zener));
-      double estimated_resistor_power = std::pow(test_voltage - prev_itr_zener_voltage_at_max_current, 2.0) / NOMINAL_RESISTANCES.at(jResistor);
-      double estimated_zener_current = (test_voltage - prev_itr_zener_voltage_at_max_current) / NOMINAL_RESISTANCES.at(jResistor);
-      for (uint8_t jAttempt = 0u; jAttempt < 5u; jAttempt++)
-      {
-        if (test_voltage > 0.0 && 
-            test_voltage > PSU_limits.voltage_out_min && 
-            estimated_resistor_power < 0.95 * test_config.max_resistor_powers.at(jResistor) &&
-            estimated_zener_current < 0.95 * test_config.max_zener_currents.at(static_cast<size_t>(this_zener)))
-        {
-          revert_to_min_voltage = false;
-          break;
-        }
-        else
-        {
-          test_voltage -= test_config.voltage_steps.at(static_cast<size_t>(this_zener));
-          estimated_resistor_power = std::pow(test_voltage - prev_itr_zener_voltage_at_max_current, 2.0) / NOMINAL_RESISTANCES.at(jResistor);
-          estimated_zener_current = (test_voltage - prev_itr_zener_voltage_at_max_current) / NOMINAL_RESISTANCES.at(jResistor);
-        }
-      }
-
-      if (revert_to_min_voltage)
-      {
-        /* Check assumed fixture resistor power. */
-        test_voltage = PSU_limits.voltage_out_min;
-        double worst_case_resistor_power = test_voltage * test_voltage / NOMINAL_RESISTANCES.at(jResistor);
-        if (worst_case_resistor_power > test_config.max_resistor_powers.at(jResistor))
-        {
-          std::printf("Warning: Minimum voltage level %.3fV could exceed configured\n", test_voltage);
-          std::printf("         maximum resistor power %.3fW for %.1f Ohm resistor.\n", 
-            test_config.max_resistor_powers.at(jResistor), NOMINAL_RESISTANCES.at(jResistor));
-          std::printf("         Skipping this resistor.\n\n");
-          continue;
-        }
-      }
-
-      /* Set initial PSU voltage and turn output on. */
-      set_ret = set_PSU_voltage(psu_com_port_handle, test_voltage);
-      if (set_ret != SetDataStatus::ALL_OK)
-      {
-        std::printf("Error while setting PSU voltage to %.3fV.\n\n", test_voltage);
-        exit_cleanup();
-        return EXIT_FAILURE;
-      }
-
-      set_ret = set_PSU_output(psu_com_port_handle, true);
-      if (set_ret != SetDataStatus::ALL_OK)
-      {
-        std::printf("Error while turning PSU output on.\n\n");
-        exit_cleanup();
-        return EXIT_FAILURE;
-      }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-      bool break_due_to_zener_current = false;
-      bool break_due_to_zener_power = false;
-
-      for (/* nothing */; 
-           test_voltage < PSU_limits.voltage_out_max;
-           test_voltage += test_config.voltage_steps.at(static_cast<size_t>(this_zener)))
-      {
-        if (ctrl_c_happened)
-        {
-          std::printf("Detected Ctrl + C; Exiting.\n\n");
-          exit_cleanup();
-          return EXIT_SUCCESS;
-        }
-
-        set_ret = set_PSU_voltage(psu_com_port_handle, test_voltage);
-        if (set_ret != SetDataStatus::ALL_OK)
-        {
-          std::printf("Error while setting PSU voltage to %.3fV.\n\n", test_voltage);
-          exit_cleanup();
-          return EXIT_FAILURE;
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-        /**
-         * Take & record measurements.
-         * Worksheet columns are
-         * PSU Voltage Setting (V),Measured PSU Voltage (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
-         */
-        double meas_psu_voltage = 0.0;
-        double dvm_zener_voltage = 0.0;
-        double calc_zener_current = 0.0;
-
-        get_ret = meas_DMM_DCV(dmm_com_port_handle, dvm_zener_voltage);
-        if (get_ret != GetDataStatus::ALL_OK && get_ret != GetDataStatus::COM_ERROR)
-        {
-          /* try a second time if ZERO_DATA or UNRECOGNIZED_RESPONSE */
-          get_ret = meas_DMM_DCV(dmm_com_port_handle, dvm_zener_voltage);
-        }
-        if (get_ret != GetDataStatus::ALL_OK)
-        {
-          std::printf("Error retrieving DMM DC Voltage measurement.\n\n");
-          exit_cleanup();
-          return EXIT_FAILURE;
-        }
-
-        get_ret = meas_PSU_voltage(psu_com_port_handle, meas_psu_voltage);
-        if (get_ret != GetDataStatus::ALL_OK)
-        {
-          std::printf("Error retrieving PSU Voltage measurement.\n\n");
-          exit_cleanup();
-          return EXIT_FAILURE;
-        }
-
-        calc_zener_current = (meas_psu_voltage - dvm_zener_voltage) / NOMINAL_RESISTANCES.at(jResistor);
-        if (calc_zener_current >= this_itr_max_zener_current)
-        {
-          this_itr_max_zener_current = calc_zener_current;
-          this_itr_zener_voltage_at_max_current = dvm_zener_voltage;
-        }
-
-        if (calc_zener_current >= test_config.min_valid_zener_current &&
-            calc_zener_current >= 1.01 * prev_itr_max_zener_current)
-        {
-          this_sheet.add_number_cell(sheet_row, 1u, test_voltage, BasicWorkbook::NumberFormat::FIX3);
-          this_sheet.add_number_cell(sheet_row, 2u, meas_psu_voltage, BasicWorkbook::NumberFormat::FIX6);
-          this_sheet.add_number_cell(sheet_row, 3u, dvm_zener_voltage, BasicWorkbook::NumberFormat::FIX6);
-          this_sheet.add_number_cell(sheet_row, 4u, NOMINAL_RESISTANCES.at(jResistor), BasicWorkbook::NumberFormat::FIX1);
-          std::string zener_current_formula = "(" + BasicWorkbook::integerref_to_mixedref(sheet_row, 2u) +
-            "-" + BasicWorkbook::integerref_to_mixedref(sheet_row, 3u) + ") / " +
-            BasicWorkbook::integerref_to_mixedref(sheet_row, 4u);
-          this_sheet.add_formula_cell(sheet_row, 5u, zener_current_formula, BasicWorkbook::NumberFormat::SCI5);
-          sheet_row++;
-        }
-
-        std::printf("%.6e,%.6e,%.6e,%.1f,%.6e\n", test_voltage, meas_psu_voltage, dvm_zener_voltage, NOMINAL_RESISTANCES.at(jResistor), calc_zener_current);
-
-        double next_voltage_level = test_voltage + test_config.voltage_steps.at(static_cast<size_t>(this_zener));
-        if (dvm_zener_voltage > 0.0 && next_voltage_level > dvm_zener_voltage)
-        {
-          /* Check assumed fixture resistor power at next voltage level */
-          double next_res_power = std::pow(next_voltage_level - dvm_zener_voltage, 2.0) / NOMINAL_RESISTANCES.at(jResistor);
-          if (next_res_power > test_config.max_resistor_powers.at(jResistor)) break;
-
-          /* Check assumed Zener current at next voltage level */
-          double next_zener_current = (next_voltage_level - dvm_zener_voltage) / NOMINAL_RESISTANCES.at(jResistor);
-          if (next_zener_current > test_config.max_zener_currents.at(static_cast<size_t>(this_zener)))
-          {
-            break_due_to_zener_current = true;
-            break;
-          }
-
-          /* Check assumed Zener diode power at next voltage level */
-          double next_zener_power = dvm_zener_voltage * (next_voltage_level - dvm_zener_voltage) / NOMINAL_RESISTANCES.at(jResistor);
-          if (next_zener_power > test_config.max_zener_powers.at(static_cast<size_t>(this_zener)))
-          {
-            break_due_to_zener_power = true;
-            break;
-          }
-        }
-      }
-
-      /**
-       * Testing at a lower resistance will not help with either a
-       * Zener current limit or a Zener power limit.
-       */
-      if (break_due_to_zener_current || break_due_to_zener_power) break;
-
-    } while (jResistor > 0u);
-  }
-
-  try
-  {
-    workbook_started = false;
-    workbook.publish(workbook_filename);
-  }
-  catch (std::exception &e)
-  {
-    std::printf("Error creating workbook file %s.\n%s\n\n", workbook_filename.c_str(), e.what());
-    exit_cleanup();
-    return EXIT_FAILURE;
+    /* Open the relay for the indicated fixture resistor. */
+    dln_res = DlnGpioPinSetOutVal(diolan_handle, RESISTOR_RELAY_PIN.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener)))), 0u);
+    if (!DLN_SUCCEEDED(dln_res))
+    {
+      std::printf("Error: Could not set the level of GPIO pin %u.\n\n", RESISTOR_RELAY_PIN.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener)))));
+    }
+    
+    std::printf("%.3f,%.6e,%.1f,%.6e\n", test_config.test_voltages.at(static_cast<size_t>(this_zener)), dvm_zener_voltage, NOMINAL_RESISTANCES.at(static_cast<size_t>(test_config.test_resistors.at(static_cast<size_t>(this_zener)))), calc_zener_current);
   }
 
   std::printf("Test finished successfully.\n");

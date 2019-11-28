@@ -62,7 +62,7 @@ enum class KnownStateStatus : uint8_t
 };
 
 KnownStateStatus set_known_PSU_state(HANDLE com_port_handle);
-KnownStateStatus set_known_DMM_state(HANDLE com_port_handle);
+KnownStateStatus set_known_DMM_state(HANDLE com_port_handle, const bool autorange = true);
 
 typedef struct
 {

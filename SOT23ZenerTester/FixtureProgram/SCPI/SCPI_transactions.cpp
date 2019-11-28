@@ -212,13 +212,18 @@ KnownStateStatus set_known_PSU_state(HANDLE com_port_handle)
  * :CALC:FUNC? check that stats calculations are off
  * :FUNC:VOLT:DC set for dc voltage measurement
  * :FUNC? check we are measuring dc voltage
- * :MEAS AUTO set measurements for autorange. no way to check this
+ * if autorange is true,
+ *   :MEAS AUTO sets measurements for autorange. no way to check this
+ * otherwise,
+ *   :MEAS MANU configures manual measurement range determination. no way to check this
+ *   :MEAS:VOLT:DC 2 sets 20V measurement range
+ *   :MEAS:VOLT:DC:RANGE? checks this
  * :MEAS:VOLT:DC:IMPE 10G set 10 Gigohm measurement impedance for ranges up through 20V
  * :MEAS:VOLT:DC:IMPE? check 10G measurement impedance
  * :TRIG:SOUR SINGLE set for single trigger
  * :TRIG:SOUR? check single trigger
  */
-KnownStateStatus set_known_DMM_state(HANDLE com_port_handle)
+KnownStateStatus set_known_DMM_state(HANDLE com_port_handle, const bool autorange)
 {
   SCPIstatus SCPIret = SCPIwrite(com_port_handle, "*CLS");
   if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
@@ -337,10 +342,35 @@ KnownStateStatus set_known_DMM_state(HANDLE com_port_handle)
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-  SCPIret = SCPIwrite(com_port_handle, ":MEAS AUTO");
-  if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
+  if (autorange)
+  {
+    SCPIret = SCPIwrite(com_port_handle, ":MEAS AUTO");
+    if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+  else
+  {
+    SCPIret = SCPIwrite(com_port_handle, ":MEAS MANU");
+    if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    SCPIret = SCPIwrite(com_port_handle, ":MEAS:VOLT:DC 2");
+    if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    SCPIret = SCPIwrite(com_port_handle, ":MEAS:VOLT:DC:RANGE?");
+    if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
+
+    SCPIret = SCPIread(com_port_handle, scpi_read);
+    if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
+
+    scpi_read = trim_whitespace(scpi_read);
+    if (scpi_read.empty()) return KnownStateStatus::ZERO_DATA;
+    else if (!case_insensitive_same(scpi_read, "2")) return KnownStateStatus::SETTING_CHECK_FAILED;
+  }
 
   SCPIret = SCPIwrite(com_port_handle, ":MEAS:VOLT:DC:IMPE 10G");
   if (SCPIret != SCPIstatus::ALL_OK) return KnownStateStatus::COM_ERROR;
