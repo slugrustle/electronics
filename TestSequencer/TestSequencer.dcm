@@ -1,0 +1,109 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 0438600002
+D 6p6c RJ11 modular jack
+K connector
+F ~
+$ENDCMP
+#
+$CMP 0685T1500-01
+D 1.5A 63VDC slow 1206 case fuse
+K fuse
+F ~
+$ENDCMP
+#
+$CMP 282837-2
+D Two position, 5.08mm pitch, through hole screw type terminal block
+K connector
+F ~
+$ENDCMP
+#
+$CMP C
+D Unpolarized capacitor
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP DF2S12FU,H3F
+D 9V VWM unidirectional TVS diode
+K diode
+F ~
+$ENDCMP
+#
+$CMP DLP05LC-7-F
+D Low capacitance unidirectional TVS diode
+K diode
+F ~
+$ENDCMP
+#
+$CMP GND
+D Power symbol creates a global label with name "GND" , ground
+K power-flag
+$ENDCMP
+#
+$CMP HHXA500ARA470MHA0G
+D 47uF 50V Aluminum polymer capacitor, surface mount
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP IFX24401TEV50
+D 45V input, 5V output, low quiescent current linear regulator
+$ENDCMP
+#
+$CMP KC5032A32.0000CMGE00
+D 32MHz 5V oscillator
+$ENDCMP
+#
+$CMP MountingBoss
+D Hole for board mount boss
+F ~
+$ENDCMP
+#
+$CMP NL17SZ17DFT2G
+D Schmitt trigger non-inverting buffer, SC-70-5
+$ENDCMP
+#
+$CMP PIC16F15324-E_SN
+D MCU, 14-SOIC
+$ENDCMP
+#
+$CMP PJ-102AH
+D DC Barrel Jack, for 5.5mm dia, 2.0mm center pin
+K DC power barrel jack connector
+F ~
+$ENDCMP
+#
+$CMP PMEG60T10ELPX
+D Low Vf, low leakage, 60V Schottky diode, SOD-128
+K diode
+F ~
+$ENDCMP
+#
+$CMP R
+D Resistor
+K R res resistor
+F ~
+$ENDCMP
+#
+$CMP SD05-7
+D 5V VWM unidirectional TVS diode
+K diode
+F ~
+$ENDCMP
+#
+$CMP SMAJ15CA
+D Bidirectional 15Vwm TVS diode, SMA package
+K diode TVS thyrector
+F ~
+$ENDCMP
+#
+$CMP Screw_#2
+D #2-28 thread forming screw for plastics, round head, phillips drive
+$ENDCMP
+#
+$CMP Screw_#4
+D #4-20 thread forming screw for plastics, round head, phillips drive
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,32 @@
+board width: 178mm
+board depth: 72mm
+
+#4 screw has 2.2mm dia hole, 7.5mm dia support.
+#2 screw has 1.6mm dia hole, 5.8mm dia support.
+boss has 6mm dia support, 3mm dia 2mm tall post
+
+#2 screw coordinates relative to board southwest corner
++X points east; +Y points north. Units: mm.
+  S5:  135.5, 5
+  S6:  5, 5
+  S7:  103, 5
+  S8:  37, 5
+  S9:  173.4, 5
+  S10: 70, 5
+
+boss coordinates relative to board southwest corner
++X points east; +Y points north. Units: mm.
+  B1: 151.5, 11
+  B2: 86.5, 5
+  B3: 53.5, 5
+  B4: 20.5, 5
+  B5: 119, 5
+
+#4 screw coordinates relative to board southwest corner
++X points east; +Y points north. Units: mm.
+  S1:  41, 19.5
+  S2:  132, 19.5
+  S3:  41, 65.5
+  S4:  132, 65.5
+  S11: 10, 62
+  S12: 168, 62
