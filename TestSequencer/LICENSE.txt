@@ -1,6 +1,6 @@
 License information for the TestSequencer project in the repository
 https://github.com/slugrustle/electronics
-2020-02-15
+2020-02-23
 
 [Datasheets]
 All files in the Datasheets directory are copyright their respective
@@ -76,11 +76,14 @@ and the following files in the repository root directory
 - TestSequencer.net
 - TestSequencer.pro
 - TestSequencer.sch
-- TestSequencer_Assembly_Rev0.pdf
+- TestSequencer_Assembly_Bottom_Rev0.pdf
+- TestSequencer_Assembly_Top_Rev0.pdf
 - TestSequencer_BoardBottom_Rev0.svg
 - TestSequencer_BoardTop_Rev0.svg
 - TestSequencer_Gerbers_JLCPCB_Rev0.zip
 - TestSequencer_Schematic_Rev0.pdf
+- LICENSE.txt
+- README.md
 are published under the CC0 1.0 Universal Public Domain Dedication,
 which can be found at https://creativecommons.org/publicdomain/zero/1.0/,
 and which is reproduced below.
