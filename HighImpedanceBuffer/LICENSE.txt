@@ -1,6 +1,6 @@
 License information for the HighImpedanceBuffer project in the repository
 https://github.com/slugrustle/electronics
-2019-09-01
+2020-02-23
 
 [Datasheets]
 All files in the Datasheets directory are copyright their respective
@@ -62,7 +62,14 @@ the following files in the Enclosure directory
 - BufferBox.scad
 - BufferBox.stl
 - BufferBox.zcodex
+- BufferBox_DiagonalView.png
 - BufferBox_settings.txt
+- BufferBoxLid.scad
+- BufferBoxLid.stl
+- BufferBoxLid.zcodex
+- BufferBoxLid_DiagonalView.png
+- BufferBoxLid_settings.txt
+- BufferLabel_3x1inch_EPL.txt
 and the following files in the repository root directory
 - HighImpedanceBuffer.kicad_pcb
 - HighImpedanceBuffer.net
@@ -71,8 +78,10 @@ and the following files in the repository root directory
 - HighImpedanceBuffer_Assembly.pdf
 - HighImpedanceBuffer_BoardBottom.svg
 - HighImpedanceBuffer_BoardTop.svg
-- HighImpedanceBuffer_Rev2_Gerbers_JLCPCB.zip
+- HighImpedanceBuffer_Rev4_Gerbers_JLCPCB.zip
 - HighImpedanceBuffer_Schematic.pdf
+- LICENSE.txt
+- README.md
 are published under the CC0 1.0 Universal Public Domain Dedication,
 which can be found at https://creativecommons.org/publicdomain/zero/1.0/,
 and which is reproduced below.
