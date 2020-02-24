@@ -1,10 +1,16 @@
 License information for the SOT23ZenerTester project in the repository
 https://github.com/slugrustle/electronics
-2019-09-21
+2020-02-23
 
 [Datasheets]
 All files in the Datasheets directory are copyright their respective
 owners and are provided for reference purposes.
+
+[Diolan]
+The files in the FixtureProgram/Diolan directory are reproduced from
+the redistributable code provided by Diolan for their DLN-4ME interface
+adapter. These files belong to Diolan and are provided for completeness.
+See https://diolan.com/ for more information.
 
 [KiCad Library Files]
 The following footprint files in the SOT23ZenerTester.pretty
@@ -50,7 +56,7 @@ the following entries in the SOT23ZenerTester.lib and
 SOT23ZenerTester.dcm files
 - 3570-1331-123
 - CSD_Dual_SOT23
-and the following files in the repository root directory
+the following files in the repository root directory
 - SOT23ZenerTester.kicad_pcb
 - SOT23ZenerTester.net
 - SOT23ZenerTester.pro
@@ -58,8 +64,45 @@ and the following files in the repository root directory
 - SOT23ZenerTester_Assembly.pdf
 - SOT23ZenerTester_BoardBottom.svg
 - SOT23ZenerTester_BoardTop.svg
-- SOT23ZenerTester_Re0_Gerbers_JLCPCB.zip
+- SOT23ZenerTester_Rev1_Gerbers_JLCPCB.zip
 - SOT23ZenerTester_Schematic.pdf
+- LICENSE.txt
+- README.md
+the following files in the SupportPlate directory
+- SOT23ZenerTester_Plate.scad
+- SOT23ZenerTester_Plate.stl
+- SOT23ZenerTester_Plate.zcodex
+- SOT23ZenerTester_Plate_DiagonalView.png
+- SOT23ZenerTester_Plate_settings.txt
+the following files in the Bill_of_Materials directory
+- SOT23ZenerTester_BoM.pdf
+- SOT23ZenerTester_BoM.tex
+the following files in the FixtureProgram/office_open_xml directory
+- BasicWorkbook.cpp
+- BasicWorkbook.h
+- IttyZip.cpp
+- IttyZip.h
+the following files in the FixtureProgram/Parsing directory
+- parser_helpers.cpp
+- parser_helpers.h
+the following files in the FixtureProgram/Release directory
+- ExampleConfiguration.txt
+- SingleShotConfiguration_1mA.txt
+- SingleShotConfiguration_1uA.txt
+- SingleShotConfiguration_5mA.txt
+the following files in the FixtureProgram/SCPI directory
+- SCPI_helpers.cpp
+- SCPI_helpers.h
+- SCPI_transactions.cpp
+- SCPI_transactions.h
+the following files in the FixtureProgram/SingleShot directory
+- parse_config_file.cpp
+- parse_config_file.h
+- SingleShot.cpp
+and the following files in the FixtureProgram/TestZeners directory
+- parse_config_file.cpp
+- parse_config_file.h
+- TestZeners.cpp
 are published under the CC0 1.0 Universal Public Domain Dedication,
 which can be found at https://creativecommons.org/publicdomain/zero/1.0/,
 and which is reproduced below.

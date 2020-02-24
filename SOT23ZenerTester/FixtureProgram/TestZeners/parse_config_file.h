@@ -1,9 +1,11 @@
 /**
  * parse_config_file.h
  * 
- * TODO: proper file header
+ * Declarations for parser code purpose-built to parse the text configuration
+ * file read by the TestZeners program.
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain

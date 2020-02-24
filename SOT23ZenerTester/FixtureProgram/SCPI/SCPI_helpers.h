@@ -1,9 +1,11 @@
 /**
  * SCPI_helpers.h
  * 
- * TODO: proper file header
+ * Declarations for basic functions to send and recieve ASCII string
+ * SCPI commands over a properly configured COM port.
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain

@@ -1,9 +1,11 @@
 /**
  * parser_helpers.cpp
  * 
- * TODO: proper file header
+ * Definitions for fairly general-purpose routines used in parsing user
+ * input and configuration files.
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain

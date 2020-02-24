@@ -1,9 +1,13 @@
 /**
  * TestZeners.cpp
  * 
- * TODO: proper file header
+ * TestZeners obtains a full voltage / current curve for the Zener diodes
+ * under test by using multiple supply voltages and pullup resistors in
+ * sequence to vary the Zener bias current. Test results are stored in an
+ * office open xml workbook (.xlsx file).
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain

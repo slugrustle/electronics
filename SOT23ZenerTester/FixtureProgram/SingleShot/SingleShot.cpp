@@ -1,9 +1,18 @@
 /**
  * SingleShot.cpp
  * 
- * TODO: proper file header
+ * SingleShot tests each configured Zener diode at a single voltage with
+ * a single pullup resistor in a short pulse. There is a 1ms delay after
+ * commanding the Zener diode relay closed and taking the measurement,
+ * subsequent to which the Zener diode relay is opened. Test results are
+ * printed to the screen.
+ * 
+ * The goal of this test is to minimize Zener diode self-heating at higher
+ * currents. This effect is not limited as much as I would like due to
+ * switching speed limitations in the relays.
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain

@@ -1,0 +1,49 @@
+PS C:\Users\user\Documents\GitHub\electronics\SOT23ZenerTester\FixtureProgram\Release> .\SingleShot.exe .\SingleShotConfiguration_5mA.txt
+Usage:
+
+.\SingleShot.exe config_file.txt
+
+Opened diolan device with serial 0xEFC6E3C5.
+Opened COM port for DMM, COM4.
+DMM identified as a Rigol DM3068.
+DMM ID string: Rigol Technologies,DM3068,DM3O210400088,01.01.00.01.10.00
+Warning: You must manually set the Measurement Integration Time
+         to 0.06 NPLC, as this is not presently implemented in
+         software.
+
+DMM set to known state.
+Opened COM port for PSU, COM1.
+PSU identified as Itech IT6100B series device.
+PSU ID string: Itech, IT6123B, 800090020747410013, 1.25-2.03
+PSU set to known state.
+Testing Zener Socket J5L
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+10.100,5.109566e+00,1000.0,4.990434e-03
+Testing Zener Socket J5R
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+10.100,5.112243e+00,1000.0,4.987757e-03
+Testing Zener Socket J6L
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+10.100,5.111081e+00,1000.0,4.988919e-03
+Testing Zener Socket J6R
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+10.100,5.101252e+00,1000.0,4.998748e-03
+Testing Zener Socket J7L
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+10.100,5.103546e+00,1000.0,4.996454e-03
+Testing Zener Socket J7R
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+20.000,1.505951e+01,1000.0,4.940486e-03
+Testing Zener Socket J8L
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+20.000,1.505206e+01,1000.0,4.947939e-03
+Testing Zener Socket J8R
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+20.000,1.505274e+01,1000.0,4.947264e-03
+Testing Zener Socket J9L
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+20.000,1.505572e+01,1000.0,4.944280e-03
+Testing Zener Socket J9R
+PSU Voltage Setting (V),Measured Zener Voltage (V),Nominal Test Resistance (Ohms),Calculated Zener Current (A)
+20.000,1.505363e+01,1000.0,4.946367e-03
+Test finished successfully.

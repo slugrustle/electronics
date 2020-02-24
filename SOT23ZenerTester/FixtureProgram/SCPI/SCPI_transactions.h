@@ -1,9 +1,11 @@
 /**
  * SCPI_transactions.h
  * 
- * TODO: proper file header
+ * Declarations of functions that manage more complex SCPI transactions to 
+ * configure or otherwise interact with test equipment.
  * 
  * Written in 2019 by Ben Tesch.
+ * Originally distributed at https://github.com/slugrustle/electronics
  *
  * To the extent possible under law, the author has dedicated all copyright
  * and related and neighboring rights to this software to the public domain
