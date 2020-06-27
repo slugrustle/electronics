@@ -6,11 +6,12 @@ To use this program, run
 
 ```PS > .\HH509_Logger.exe COM1 output_file.xlsx```
 
-from PowerShell or the command line. COM1 stands in for the COM port to which the HH509R is connected.
+from PowerShell or the command line. COM1 stands in for the COM port to which the HH509R is connected. The thermocouple reader should be powered on before running HH509\_Logger.exe.
 
-The program ceases collecting data and saves its output .xlsx file under two conditions:
+The program ceases collecting data and saves its output .xlsx file under three conditions:
 
 1. The user keys Ctrl+C in the PowerShell or command line window.
-2. The program receives no data from the HH509R for 30 seconds.
+2. The program receives no data of any kind from the HH509R for 60 seconds.
+3. The program receives no valid data from the HH509R for 300 seconds.
 
 See Release\example\_data.xlsx for an example output file.

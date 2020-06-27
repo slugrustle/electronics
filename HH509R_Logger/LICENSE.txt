@@ -1,6 +1,6 @@
 License information for the HH509R_Logger project in the repository
 https://github.com/slugrustle/electronics
-2020-06-26
+2020-06-27
 
 HH509R_Manual.pdf
 This file is copyright Omega Engineering Inc. and is solely provided
@@ -16,6 +16,7 @@ IttyZip.cpp
 IttyZip.h
 README.md
 LICENSE.txt
+example_data.xlsx
 HH509R_Logger.exe
 are published under the CC0 1.0 Universal Public Domain Dedication,
 which can be found at https://creativecommons.org/publicdomain/zero/1.0/,
