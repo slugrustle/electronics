@@ -218,7 +218,7 @@ static const uint32_t first_data_row = 4u;
  */
 static const uint32_t poll_min_wait_ms = 10u;
 static const uint32_t intersend_wait_ms = 600u;
-static const uint32_t mode_change_retry_ms = 1350u;
+static const uint32_t mode_change_retry_ms = 800u;
 static const uint32_t restart_retry_s = 2u;
 static const uint32_t restart_wait_s = 4u;
 static const uint32_t no_data_timeout_s = 60u;
@@ -235,6 +235,7 @@ static const double min_T1_T2_lookback_s = 300.0;
  * thermocouple reader data line.
  */
 static const size_t valid_data_line_length = 30u;
+static const size_t T1_T2_timestamp_length = 22u;
 static const size_t line_terminator_length = 2u;
 static const size_t T1_temp_sign_index = 0u;
 static const size_t T1_temp_MSD_index = 1u;
@@ -258,6 +259,95 @@ static const size_t Hi_limit_char_index = 26u;
 static const size_t Lo_limit_char_index = 27u;
 static const size_t Unused_char_3_index = 28u;
 static const size_t Battery_status_char_index = 29u;
+
+/**
+ * Returns true if the input data_line string appears
+ * to be valid purely based on the which values are
+ * allowable at each character position in the data line.
+ *
+ * Returns false otherwise.
+ */
+bool is_data_line_valid(const std::string &data_line)
+{
+  bool any_errors = false;
+
+  any_errors |= (data_line.at(T1_temp_sign_index) != '+' && 
+                 data_line.at(T1_temp_sign_index) != '-');
+
+  for (size_t jChar = T1_temp_MSD_index; jChar <= T1_temp_LSD_index; jChar++)
+  {
+    any_errors |= (!is_hex_char(data_line.at(jChar)));
+  }
+
+  any_errors |= (data_line.at(TC_type_char_index) != 'K' && 
+                 data_line.at(TC_type_char_index) != 'J' && 
+                 data_line.at(TC_type_char_index) != 'T' && 
+                 data_line.at(TC_type_char_index) != 'E' && 
+                 data_line.at(TC_type_char_index) != 'S');
+
+  any_errors |= (data_line.at(T2_temp_sign_index) != '+' &&
+                 data_line.at(T2_temp_sign_index) != '-');
+
+  for (size_t jChar = T2_temp_MSD_index; jChar <= T2_temp_LSD_index; jChar++)
+  {
+    any_errors |= (!is_hex_char(data_line.at(jChar)));
+  }
+
+  any_errors |= (data_line.at(Unused_char_1_index) != '_');
+
+  for (size_t jChar = Hours_MSD_index; jChar <= Hours_LSD_index; jChar++)
+  {
+    any_errors |= (!isdigit(data_line.at(jChar)));
+  }
+
+  /**
+  * Past 9 hours, 59 minutes, and 59 seconds internal HH509R timer duration,
+  * the most significant minutes digit becomes ascii value 29. It then increments
+  * to ascii value 30.
+  *
+  * Since we're not using device timestamps anyway, and this is based on HH509R
+  * ON time, which we can't track, simply don't validate the most significant
+  * minutes digit.
+  */
+
+  for (size_t jChar = Minutes_LSD_index; jChar <= Seconds_LSD_index; jChar++)
+  {
+    any_errors |= (!isdigit(data_line.at(jChar)));
+  }
+
+  any_errors |= (data_line.at(Seconds_MSD_index) == '7' || 
+                 data_line.at(Seconds_MSD_index) == '8' || 
+                 data_line.at(Seconds_MSD_index) == '9');
+
+  any_errors |= (data_line.at(Record_mode_char_index) != 'R' && 
+                 data_line.at(Record_mode_char_index) != 'M' && 
+                 data_line.at(Record_mode_char_index) != 'I' && 
+                 data_line.at(Record_mode_char_index) != 'A' && 
+                 data_line.at(Record_mode_char_index) != '-' && 
+                 data_line.at(Record_mode_char_index) != '_');
+
+  any_errors |= (data_line.at(Rel_hold_mode_char_index) != 'R' && 
+                 data_line.at(Rel_hold_mode_char_index) != 'H' && 
+                 data_line.at(Rel_hold_mode_char_index) != '_');
+
+  any_errors |= (data_line.at(Unused_char_2_index) != '_');
+
+  any_errors |= (data_line.at(Limits_mode_char_index) != 'L' &&
+                 data_line.at(Limits_mode_char_index) != '_');
+
+  any_errors |= (data_line.at(Hi_limit_char_index) != 'H' &&
+                 data_line.at(Hi_limit_char_index) != '_');
+
+  any_errors |= (data_line.at(Lo_limit_char_index) != 'L' && 
+                 data_line.at(Lo_limit_char_index) != '_');
+
+  any_errors |= (data_line.at(Unused_char_3_index) != '_');
+
+  any_errors |= (data_line.at(Battery_status_char_index) != 'B' &&
+                 data_line.at(Battery_status_char_index) != '_');
+
+  return (!any_errors);
+}
 
 /**
  * Converts a TC_type_t enum value to the corresponding
@@ -370,13 +460,8 @@ bool send_command(TC_command_t command)
   }
 
   DWORD ncomwritten = 0u;
-  if (!WriteFile(tc_reader_com_port_handle, command_c_string, command_length, &ncomwritten, NULL))
-  {
-    std::printf("Error writing to TC Reader COM port, %s.\n\n", tc_reader_com_port_printable.c_str());
-    return false;
-  }
-
-  if (ncomwritten != command_length)
+  if (!WriteFile(tc_reader_com_port_handle, command_c_string, command_length, &ncomwritten, NULL) ||
+      ncomwritten != command_length)
   {
     std::printf("Error writing to TC Reader COM port, %s.\n\n", tc_reader_com_port_printable.c_str());
     return false;
@@ -432,14 +517,17 @@ void exit_cleanup(void)
     BasicWorkbook::Workbook workbook;
     BasicWorkbook::Sheet &sheet_one = workbook.addSheet("TC Data");
     uint32_t sheet_row = 1u;
+
     {
       const BasicWorkbook::cell_style_t topleft_wrap_style = {BasicWorkbook::NumberFormat::TEXT, BasicWorkbook::HorizontalAlignment::LEFT, BasicWorkbook::VerticalAlignment::TOP, true, false};
       std::string test_description = "Thermocouple data taken with Omega HH509R reader on " + test_start_date_string + " at " + test_start_time_string + ".";
       sheet_one.add_merged_string_cell("A1", "F1", test_description, topleft_wrap_style);
     }
+    
     sheet_one.set_row_height(1u, 45.0);
 
     sheet_row = 3u;
+    
     {
       const BasicWorkbook::cell_style_t center_bold_style = {BasicWorkbook::NumberFormat::TEXT, BasicWorkbook::HorizontalAlignment::CENTER, BasicWorkbook::VerticalAlignment::BOTTOM, false, true};
       sheet_one.add_string_cell(sheet_row, 1u, u8"Time (s)", center_bold_style);
@@ -456,6 +544,7 @@ void exit_cleanup(void)
     sheet_one.set_column_width(5u, 15.255);
 
     sheet_row = first_data_row;
+
     {
       const BasicWorkbook::cell_style_t timestamp_temp_style = {BasicWorkbook::NumberFormat::FIX3, BasicWorkbook::HorizontalAlignment::GENERAL, BasicWorkbook::VerticalAlignment::BOTTOM, false, false};
       for (size_t jSample = 0u; jSample < std::min(data_vec.size(), static_cast<size_t>(BasicWorkbook::MAX_ROW - first_data_row + 1u)); jSample++)
@@ -518,8 +607,7 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 bool open_COM_port(void)
 {
   tc_reader_com_port_handle = CreateFile(tc_reader_com_port.c_str(), 
-    GENERIC_READ | GENERIC_WRITE,
-    0u, NULL, OPEN_EXISTING, 0u, NULL);
+    GENERIC_READ | GENERIC_WRITE, 0u, NULL, OPEN_EXISTING, 0u, NULL);
 
   if (tc_reader_com_port_handle == INVALID_HANDLE_VALUE)
   {
@@ -831,8 +919,9 @@ int main (int argc, char** argv)
 
     /**
      * If the thermocouple reader hasn't been sending data or hasn't
-     * been sending valid data, close the COM port, wait, reopen the
-     * COM port, and then ask it to start sending data again.
+     * been sending valid data, ask it to stop sending data, close 
+     * the COM port, wait, reopen the COM port, ask it to stop sending
+     * data, then ask it to start sending data.
      *
      * Depending on when the thermocouple reader is powered on relative
      * to when the COM port is opened, this might not restart data
@@ -843,11 +932,25 @@ int main (int argc, char** argv)
          std::chrono::seconds(restart_retry_s) < (present_time - last_restart_time) && 
          std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) )
     {
+      if (!send_command(TC_command_t::Stop_data_transmission))
+      {
+        exit_cleanup();
+        return EXIT_FAILURE;
+      }
+      
       CloseHandle(tc_reader_com_port_handle);
       
       std::this_thread::sleep_for(std::chrono::seconds(restart_wait_s));
 
       if (!open_COM_port())
+      {
+        exit_cleanup();
+        return EXIT_FAILURE;
+      }
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(intersend_wait_ms));
+
+      if (!send_command(TC_command_t::Stop_data_transmission))
       {
         exit_cleanup();
         return EXIT_FAILURE;
@@ -904,7 +1007,85 @@ int main (int argc, char** argv)
           sample_and_timestamp_t read_struct;
           read_struct.sample_string = read_data.substr(line_end_pos - valid_data_line_length, valid_data_line_length);
           read_struct.sample_time_s = std::chrono::duration<double>(present_time - test_start_time).count();
-          line_check_queue.push_back(read_struct);
+
+          if (is_data_line_valid(read_struct.sample_string))
+          {
+            /**
+             * This bit of code attempts to keep the reader out of Record mode.
+             * The retry wait prevents oscillation into and out of Record mode.
+             * The intersend wait prevents spamming the reader with commands.
+             */
+            if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_record_mode_change_time) &&
+                std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
+                read_struct.sample_string.at(Record_mode_char_index) != '_')
+            {
+              last_send_time = present_time;
+              last_record_mode_change_time = present_time;
+
+              if (!send_command(TC_command_t::Exit_record_mode))
+              {
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
+            }
+
+            /**
+             * This bit of code attempts to keep the reader out of Limits mode.
+             * The retry wait prevents oscillation into and out of Limits mode.
+             * The intersend wait prevents spamming the reader with commands.
+             */
+            if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_limits_mode_change_time) &&
+                std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
+                read_struct.sample_string.at(Limits_mode_char_index) != '_')
+            {
+              last_send_time = present_time;
+              last_limits_mode_change_time = present_time;
+
+              if (!send_command(TC_command_t::Hi_Lo_LIMITS_key))
+              {
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
+            }
+
+            /**
+             * This bit of code attempts to keep the reader out of Hold mode.
+             * The retry wait prevents oscillation into and out of Hold mode.
+             * The intersend wait prevents spamming the reader with commands.
+             */
+            if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_hold_mode_change_time) &&
+                std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
+                read_struct.sample_string.at(Rel_hold_mode_char_index) == 'H')
+            {
+              last_send_time = present_time;
+              last_hold_mode_change_time = present_time;
+
+              if (!send_command(TC_command_t::HOLD_key))
+              {
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
+            }
+
+            /**
+             * This bit of code attempts to keep the reader out of Rel mode.
+             * The retry wait prevents oscillation into and out of Rel mode.
+             * The intersend wait prevents spamming the reader with commands.
+             */
+            if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_rel_mode_change_time) &&
+                std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
+                read_struct.sample_string.at(Rel_hold_mode_char_index) == 'R')
+            {
+              last_send_time = present_time;
+              last_rel_mode_change_time = present_time;
+
+              if (!send_command(TC_command_t::REL_key))
+              {
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
+            }
+          }
 
           /**
            * The thermocouple reader sends each data line 3 times.
@@ -913,6 +1094,8 @@ int main (int argc, char** argv)
            * This avoids storing data that was corrupted during transmission,
            * which does happen with this device.
            */
+          line_check_queue.push_back(read_struct);
+
           while (line_check_queue.size() > transmissions_per_sample)
           {
             line_check_queue.pop_front();
@@ -923,8 +1106,20 @@ int main (int argc, char** argv)
             bool store_sample = false;
             uint8_t lines_to_clear = 1u;
 
-            if (line_check_queue.at(0u).sample_string.compare(line_check_queue.at(1u).sample_string) == 0 &&
-                line_check_queue.at(1u).sample_string.compare(line_check_queue.at(2u).sample_string) == 0)
+            /**
+             * Only compare data lines in the queue based on the
+             * T1 temperature, T2 temperature, thermocouple type,
+             * and timestamp.
+             * 
+             * Thermocouple reader status may change every line
+             * sent; checking it as well would throw out good data.
+             */
+            std::string T1_T2_timestamp_0 = line_check_queue.at(0u).sample_string.substr(0u, T1_T2_timestamp_length);
+            std::string T1_T2_timestamp_1 = line_check_queue.at(1u).sample_string.substr(0u, T1_T2_timestamp_length);
+            std::string T1_T2_timestamp_2 = line_check_queue.at(2u).sample_string.substr(0u, T1_T2_timestamp_length);
+
+            if (T1_T2_timestamp_0.compare(T1_T2_timestamp_1) == 0 &&
+                T1_T2_timestamp_1.compare(T1_T2_timestamp_2) == 0)
             {
               /**
                * All three data lines match. Clear all three.
@@ -932,7 +1127,7 @@ int main (int argc, char** argv)
               store_sample = true;
               lines_to_clear = transmissions_per_sample;
             }
-            else if (line_check_queue.at(0u).sample_string.compare(line_check_queue.at(2u).sample_string) == 0)
+            else if (T1_T2_timestamp_0.compare(T1_T2_timestamp_2) == 0)
             {
               /**
                * The first and third data lines match; the second is bad.
@@ -941,7 +1136,7 @@ int main (int argc, char** argv)
               store_sample = true;
               lines_to_clear = transmissions_per_sample;
             }
-            else if (line_check_queue.at(0u).sample_string.compare(line_check_queue.at(1u).sample_string) == 0)
+            else if (T1_T2_timestamp_0.compare(T1_T2_timestamp_1) == 0)
             {
               /**
                * The first and second data lines match.
@@ -952,11 +1147,11 @@ int main (int argc, char** argv)
               store_sample = true;
               lines_to_clear = 2u;
             }
-            else if (line_check_queue.at(1u).sample_string.compare(line_check_queue.at(2u).sample_string) == 0)
+            else if (T1_T2_timestamp_1.compare(T1_T2_timestamp_2) == 0)
             {
               /**
                * The second and third line match. Only clear the first line.
-               * This sample will be stored in the next iteration (assuming more valid data arrives).
+               * This sample will be stored in the next iteration (assuming more data arrives).
                */
               store_sample = false;
               lines_to_clear = 1u;
@@ -970,364 +1165,196 @@ int main (int argc, char** argv)
               lines_to_clear = 1u;
             }
 
-            if (store_sample)
+            if (store_sample && is_data_line_valid(line_check_queue.at(0u).sample_string))
             {
-              std::string sample = line_check_queue.at(0u).sample_string;
-                
-              /**
-               * Check the sample string for any errors discoverable by
-               * simply looking at the allowed character ranges.
-               */
-              bool any_errors = false;
-
-              any_errors |= (sample.at(T1_temp_sign_index) != '+' && 
-                             sample.at(T1_temp_sign_index) != '-');
-
-              for (size_t jChar = T1_temp_MSD_index; jChar <= T1_temp_LSD_index; jChar++)
-              {
-                any_errors |= (!is_hex_char(sample.at(jChar)));
-              }
-
-              any_errors |= (sample.at(TC_type_char_index) != 'K' && 
-                             sample.at(TC_type_char_index) != 'J' && 
-                             sample.at(TC_type_char_index) != 'T' && 
-                             sample.at(TC_type_char_index) != 'E' && 
-                             sample.at(TC_type_char_index) != 'S');
-
-              any_errors |= (sample.at(T2_temp_sign_index) != '+' &&
-                             sample.at(T2_temp_sign_index) != '-');
-                
-              for (size_t jChar = T2_temp_MSD_index; jChar <= T2_temp_LSD_index; jChar++)
-              {
-                any_errors |= (!is_hex_char(sample.at(jChar)));
-              }
-                
-              any_errors |= (sample.at(Unused_char_1_index) != '_');
-                
-              for (size_t jChar = Hours_MSD_index; jChar <= Hours_LSD_index; jChar++)
-              {
-                any_errors |= (!isdigit(sample.at(jChar)));
-              }
-              
-              /**
-               * Past 9 hours, 59 minutes, and 59 seconds internal HH509R timer duration,
-               * the most significant minutes digit becomes ascii value 29.
-               *
-               * Since we're not using device timestamps anyway, allow this.
-               */
-              any_errors |= (sample.at(Minutes_MSD_index) != '0' && 
-                             sample.at(Minutes_MSD_index) != '1' && 
-                             sample.at(Minutes_MSD_index) != '2' && 
-                             sample.at(Minutes_MSD_index) != '3' && 
-                             sample.at(Minutes_MSD_index) != '4' && 
-                             sample.at(Minutes_MSD_index) != '5' && 
-                             sample.at(Minutes_MSD_index) != '6' && 
-                             sample.at(Minutes_MSD_index) != static_cast<char>(29));
-
+              const std::string &sample = line_check_queue.at(0u).sample_string;
 
               /**
-               * Continue to treat ascii value 29 in the most significant minutes digit
-               * as invalid before the 10 hour mark.
+               * Data looks basically valid. Parse it into a struct,
+               * save in data_vec for later storage in a .xlsx file,
+               * and print the readings so the user can see what's
+               * going on.
                */
-              any_errors |= (sample.at(Hours_MSD_index) == '0' &&
-                             sample.at(Minutes_MSD_index) == static_cast<char>(29));
+              last_valid_data_time = std::chrono::steady_clock::now();
 
-              for (size_t jChar = Minutes_LSD_index; jChar <= Seconds_LSD_index; jChar++)
-              {
-                any_errors |= (!isdigit(sample.at(jChar)));
-              }
-                
-              any_errors |= (sample.at(Seconds_MSD_index) == '7' || 
-                             sample.at(Seconds_MSD_index) == '8' || 
-                             sample.at(Seconds_MSD_index) == '9');
-                
-              any_errors |= (sample.at(Record_mode_char_index) != 'R' && 
-                             sample.at(Record_mode_char_index) != 'M' && 
-                             sample.at(Record_mode_char_index) != 'I' && 
-                             sample.at(Record_mode_char_index) != 'A' && 
-                             sample.at(Record_mode_char_index) != '-' && 
-                             sample.at(Record_mode_char_index) != '_');
-                
-              any_errors |= (sample.at(Rel_hold_mode_char_index) != 'R' && 
-                             sample.at(Rel_hold_mode_char_index) != 'H' && 
-                             sample.at(Rel_hold_mode_char_index) != '_');
+              parsed_sample_t parsed_sample;
 
-              any_errors |= (sample.at(Unused_char_2_index) != '_');
-
-              any_errors |= (sample.at(Limits_mode_char_index) != 'L' &&
-                             sample.at(Limits_mode_char_index) != '_');
-
-              any_errors |= (sample.at(Hi_limit_char_index) != 'H' &&
-                             sample.at(Hi_limit_char_index) != '_');
-
-              any_errors |= (sample.at(Lo_limit_char_index) != 'L' && 
-                             sample.at(Lo_limit_char_index) != '_');
-
-              any_errors |= (sample.at(Unused_char_3_index) != '_');
-              
-              any_errors |= (sample.at(Battery_status_char_index) != 'B' &&
-                             sample.at(Battery_status_char_index) != '_');
-
-              if (!any_errors)
-              {
-                /**
-                 * Data looks basically valid. Parse it into a struct,
-                 * save in data_vec for later storage in a .xlsx file,
-                 * and print the readings so the user can see what's
-                 * going on.
-                 */
-                last_valid_data_time = std::chrono::steady_clock::now();
-
-                parsed_sample_t parsed_sample;
-
-                /**
-                 * Thermocouple reader timestamps appear to be unreliable from
-                 * streamed data that I have viewed.
-                 * Use the steady_clock timestamp of data reception to mark
-                 * the measurement time of each sample.
-                 * I suppose this can be late by about 1/3 of a second in the
-                 * case that the first data line has a communication error.
-                 */
-                parsed_sample.timestamp = line_check_queue.at(0u).sample_time_s;
+              /**
+               * Thermocouple reader timestamps appear to be unreliable from
+               * streamed data that I have viewed.
+               * Use the steady_clock timestamp of data reception to mark
+               * the measurement time of each sample.
+               * I suppose this can be late by about 1/3 of a second in the
+               * case that the first data line (of 3) for this sample has a
+               * communication error.
+               */
+              parsed_sample.timestamp = line_check_queue.at(0u).sample_time_s;
                   
-                /**
-                 * Convert temperature readings from sign/magnitude hexadecimal integer
-                 * millidegrees Celsius to double floating point degrees Celsius.
-                 */
-                parsed_sample.T1_degC = signmag_hexint_mdegC_to_degC(sample, T1_temp_sign_index, T1_temp_MSD_index);
-                parsed_sample.T2_degC = signmag_hexint_mdegC_to_degC(sample, T2_temp_sign_index, T2_temp_MSD_index);
+              /**
+               * Convert temperature readings from sign/magnitude hexadecimal integer
+               * millidegrees Celsius to double floating point degrees Celsius.
+               */
+              parsed_sample.T1_degC = signmag_hexint_mdegC_to_degC(sample, T1_temp_sign_index, T1_temp_MSD_index);
+              parsed_sample.T2_degC = signmag_hexint_mdegC_to_degC(sample, T2_temp_sign_index, T2_temp_MSD_index);
 
-                /**
-                 * Thermocouple type character.
-                 */
-                switch (sample.at(TC_type_char_index))
-                {
-                case 'K': 
-                  parsed_sample.tc_type = TC_type_t::K_type;
-                  break;
-                case 'J': 
-                  parsed_sample.tc_type = TC_type_t::J_type;
-                  break;
-                case 'T': 
-                  parsed_sample.tc_type = TC_type_t::T_type;
-                  break;
-                case 'E': 
-                  parsed_sample.tc_type = TC_type_t::E_type;
-                  break;
-                case 'S': 
-                  parsed_sample.tc_type = TC_type_t::S_type;
-                  break;
-                default: 
-                  std::printf("Error: Found invalid thermocouple type data after validation.\n\n");
-                  exit_cleanup();
-                  return EXIT_FAILURE;
-                }
+              /**
+               * Thermocouple type character.
+               */
+              switch (sample.at(TC_type_char_index))
+              {
+              case 'K': 
+                parsed_sample.tc_type = TC_type_t::K_type;
+                break;
+              case 'J': 
+                parsed_sample.tc_type = TC_type_t::J_type;
+                break;
+              case 'T': 
+                parsed_sample.tc_type = TC_type_t::T_type;
+                break;
+              case 'E': 
+                parsed_sample.tc_type = TC_type_t::E_type;
+                break;
+              case 'S': 
+                parsed_sample.tc_type = TC_type_t::S_type;
+                break;
+              default: 
+                std::printf("Error: Found invalid thermocouple type data after validation.\n\n");
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
 
-                /**
-                 * Record mode character.
-                 */
-                switch (sample.at(Record_mode_char_index))
-                {
-                case 'R':
-                  parsed_sample.record_mode = Record_mode_t::Record;
-                  break;
-                case 'M':
-                  parsed_sample.record_mode = Record_mode_t::Max;
-                  break;
-                case 'I':
-                  parsed_sample.record_mode = Record_mode_t::Min;
-                  break;
-                case 'A':
-                  parsed_sample.record_mode = Record_mode_t::Average;
-                  break;
-                case '-':
-                  parsed_sample.record_mode = Record_mode_t::Range;
-                  break;
-                case '_':
-                  parsed_sample.record_mode = Record_mode_t::Normal;
-                  break;
-                default:
-                  std::printf("Error: Found invalid record mode data after validation.\n\n");
-                  exit_cleanup();
-                  return EXIT_FAILURE;
-                }
+              /**
+               * Record mode character.
+               */
+              switch (sample.at(Record_mode_char_index))
+              {
+              case 'R':
+                parsed_sample.record_mode = Record_mode_t::Record;
+                break;
+              case 'M':
+                parsed_sample.record_mode = Record_mode_t::Max;
+                break;
+              case 'I':
+                parsed_sample.record_mode = Record_mode_t::Min;
+                break;
+              case 'A':
+                parsed_sample.record_mode = Record_mode_t::Average;
+                break;
+              case '-':
+                parsed_sample.record_mode = Record_mode_t::Range;
+                break;
+              case '_':
+                parsed_sample.record_mode = Record_mode_t::Normal;
+                break;
+              default:
+                std::printf("Error: Found invalid record mode data after validation.\n\n");
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
 
-                /**
-                 * Rel/Hold mode character, which is interesting
-                 * since both may be set.
-                 */
-                switch (sample.at(Rel_hold_mode_char_index))
-                {
-                case 'R':
-                  parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Rel;
-                  break;
-                case 'H':
-                  parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Hold;
-                  break;
-                case '_':
-                  parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Normal;
-                  break;
-                default:
-                  std::printf("Error: Found invalid Rel / Hold mode data after validation.\n\n");
-                  exit_cleanup();
-                  return EXIT_FAILURE;
-                }
+              /**
+               * Rel/Hold mode character, which is interesting
+               * since both may be set.
+               */
+              switch (sample.at(Rel_hold_mode_char_index))
+              {
+              case 'R':
+                parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Rel;
+                break;
+              case 'H':
+                parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Hold;
+                break;
+              case '_':
+                parsed_sample.rel_hold_mode = Rel_Hold_mode_t::Normal;
+                break;
+              default:
+                std::printf("Error: Found invalid Rel / Hold mode data after validation.\n\n");
+                exit_cleanup();
+                return EXIT_FAILURE;
+              }
 
-                /**
-                 * Limits mode character.
-                 */
-                if (sample.at(Limits_mode_char_index) == 'L')
-                {
-                  parsed_sample.limits_mode = true;
-                }
-                else
-                {
-                  parsed_sample.limits_mode = false;
-                }
+              /**
+               * Limits mode character.
+               */
+              if (sample.at(Limits_mode_char_index) == 'L')
+              {
+                parsed_sample.limits_mode = true;
+              }
+              else
+              {
+                parsed_sample.limits_mode = false;
+              }
 
-                /**
-                 * Battery status character.
-                 */
-                if (sample.at(Battery_status_char_index) == 'B')
-                {
-                  parsed_sample.battery_low = true;
-                }
-                else
-                {
-                  parsed_sample.battery_low = false;
-                }
+              /**
+               * Battery status character.
+               */
+              if (sample.at(Battery_status_char_index) == 'B')
+              {
+                parsed_sample.battery_low = true;
+              }
+              else
+              {
+                parsed_sample.battery_low = false;
+              }
 
-                /**
-                 * Parsed data line stored for recording in output file
-                 * upon exit.
-                 */
-                data_vec.push_back(parsed_sample);
+              /**
+               * Parsed data line stored for recording in output file
+               * upon exit.
+               */
+              data_vec.push_back(parsed_sample);
 
-                /**
-                 * All of this is just printing temperature measurements during
-                 * data collection so the user can see what's going on.
-                 */
-                T1_min_degC = std::min(T1_min_degC, parsed_sample.T1_degC);
-                T1_max_degC = std::max(T1_max_degC, parsed_sample.T1_degC);
-                T2_min_degC = std::min(T2_min_degC, parsed_sample.T2_degC);
-                T2_max_degC = std::max(T2_max_degC, parsed_sample.T2_degC);
-                double T1_T2_degC = parsed_sample.T1_degC - parsed_sample.T2_degC;
-                T1_T2_min_degC = std::min(T1_T2_min_degC, T1_T2_degC);
-                T1_T2_max_degC = std::max(T1_T2_max_degC, T1_T2_degC);
+              /**
+               * All of this is just printing temperature measurements during
+               * data collection so the user can see what's going on.
+               */
+              T1_min_degC = std::min(T1_min_degC, parsed_sample.T1_degC);
+              T1_max_degC = std::max(T1_max_degC, parsed_sample.T1_degC);
+              T2_min_degC = std::min(T2_min_degC, parsed_sample.T2_degC);
+              T2_max_degC = std::max(T2_max_degC, parsed_sample.T2_degC);
+              double T1_T2_degC = parsed_sample.T1_degC - parsed_sample.T2_degC;
+              T1_T2_min_degC = std::min(T1_T2_min_degC, T1_T2_degC);
+              T1_T2_max_degC = std::max(T1_T2_max_degC, T1_T2_degC);
 
-                std::printf("-    T1 now/min/max deg. C: %9.3f / %9.3f / %9.3f, T2 now/min/max deg. C: %9.3f / %9.3f / %9.3f\n", parsed_sample.T1_degC, T1_min_degC, T1_max_degC, parsed_sample.T2_degC, T2_min_degC, T2_max_degC);
-                std::printf("  T1-T2 now/min/max deg. C: %9.3f / %9.3f / %9.3f, TC Type: %c, Batt: %s, Time: %.3fs\n", T1_T2_degC, T1_T2_min_degC, T1_T2_max_degC, TC_type_enum_to_char(parsed_sample.tc_type), parsed_sample.battery_low ? "low" : "ok", parsed_sample.timestamp);
+              std::printf("-    T1 now/min/max deg. C: %9.3f / %9.3f / %9.3f, T2 now/min/max deg. C: %9.3f / %9.3f / %9.3f\n", parsed_sample.T1_degC, T1_min_degC, T1_max_degC, parsed_sample.T2_degC, T2_min_degC, T2_max_degC);
+              std::printf("  T1-T2 now/min/max deg. C: %9.3f / %9.3f / %9.3f, TC Type: %c, Batt: %s, Time: %.3fs\n", T1_T2_degC, T1_T2_min_degC, T1_T2_max_degC, TC_type_enum_to_char(parsed_sample.tc_type), parsed_sample.battery_low ? "low" : "ok", parsed_sample.timestamp);
 
-                size_t jSample = data_vec.size() - 1u;
-                double T1_T2_lookback_min = std::numeric_limits<double>::max();
-                double T1_T2_lookback_max = std::numeric_limits<double>::min();
-                while (true)
-                {
-                  T1_T2_lookback_min = std::min(T1_T2_lookback_min, data_vec.at(jSample).T1_degC - data_vec.at(jSample).T2_degC);
-                  T1_T2_lookback_max = std::max(T1_T2_lookback_max, data_vec.at(jSample).T1_degC - data_vec.at(jSample).T2_degC);
+              size_t jSample = data_vec.size() - 1u;
+              double T1_T2_lookback_min = std::numeric_limits<double>::max();
+              double T1_T2_lookback_max = std::numeric_limits<double>::min();
+              while (true)
+              {
+                T1_T2_lookback_min = std::min(T1_T2_lookback_min, data_vec.at(jSample).T1_degC - data_vec.at(jSample).T2_degC);
+                T1_T2_lookback_max = std::max(T1_T2_lookback_max, data_vec.at(jSample).T1_degC - data_vec.at(jSample).T2_degC);
                     
-                  if (min_T1_T2_lookback_s <= parsed_sample.timestamp - data_vec.at(jSample).timestamp)
-                  {
-                    std::printf("        T1-T2 deg. C range: %9.3f in last %.3fs\n", T1_T2_lookback_max - T1_T2_lookback_min, parsed_sample.timestamp - data_vec.at(jSample).timestamp);
-                    break;
-                  }
-
-                  if (jSample == 0u) break;
-                  jSample--;
-                }
-
-                std::printf("\n");
-
-                /**
-                 * There is no point in continuing to collect data that we
-                 * can't save in the output file.
-                 *
-                 * This MIGHT occur if the user has wired a long-lasting
-                 * 9V source into the battery connector of their thermocoupler reader.
-                 */
-                if (data_vec.size() >= static_cast<size_t>(BasicWorkbook::MAX_ROW - first_data_row + 1u))
+                if (min_T1_T2_lookback_s <= parsed_sample.timestamp - data_vec.at(jSample).timestamp)
                 {
-                  std::printf("Amount of collected data has reached the .xlsx workbook file maximum row limit, %u.\n", BasicWorkbook::MAX_ROW);
-                  std::printf("Stopping data collection.\n\n");
-                  exit_cleanup();
-                  return EXIT_SUCCESS;
+                  std::printf("        T1-T2 deg. C range: %9.3f in last %.3fs\n", T1_T2_lookback_max - T1_T2_lookback_min, parsed_sample.timestamp - data_vec.at(jSample).timestamp);
+                  break;
                 }
 
-                /**
-                 * This bit of code attempts to keep the reader out of Record mode.
-                 * The retry wait prevents oscillation into and out of Record mode.
-                 * The intersend wait prevents spamming the reader with commands.
-                 */
-                if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_record_mode_change_time) &&
-                    std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
-                    parsed_sample.record_mode != Record_mode_t::Normal)
+                if (jSample == 0u) 
                 {
-                  last_send_time = present_time;
-                  last_record_mode_change_time = present_time;
-
-                  if (!send_command(TC_command_t::Exit_record_mode))
-                  {
-                    exit_cleanup();
-                    return EXIT_FAILURE;
-                  }
+                  break;
                 }
 
-                /**
-                 * This bit of code attempts to keep the reader out of Limits mode.
-                 * The retry wait prevents oscillation into and out of Limits mode.
-                 * The intersend wait prevents spamming the reader with commands.
-                 */
-                if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_limits_mode_change_time) &&
-                    std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
-                    parsed_sample.limits_mode)
-                {
-                  last_send_time = present_time;
-                  last_limits_mode_change_time = present_time;
+                jSample--;
+              }
 
-                  if (!send_command(TC_command_t::Hi_Lo_LIMITS_key))
-                  {
-                    exit_cleanup();
-                    return EXIT_FAILURE;
-                  }
-                }
+              std::printf("\n");
 
-                /**
-                 * This bit of code attempts to keep the reader out of Hold mode.
-                 * The retry wait prevents oscillation into and out of Hold mode.
-                 * The intersend wait prevents spamming the reader with commands.
-                 */
-                if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_hold_mode_change_time) &&
-                    std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
-                    parsed_sample.rel_hold_mode == Rel_Hold_mode_t::Hold)
-                {
-                  last_send_time = present_time;
-                  last_hold_mode_change_time = present_time;
-
-                  if (!send_command(TC_command_t::HOLD_key))
-                  {
-                    exit_cleanup();
-                    return EXIT_FAILURE;
-                  }
-                }
-
-                /**
-                 * This bit of code attempts to keep the reader out of Rel mode.
-                 * The retry wait prevents oscillation into and out of Rel mode.
-                 * The intersend wait prevents spamming the reader with commands.
-                 */
-                if (std::chrono::milliseconds(mode_change_retry_ms) < (present_time - last_rel_mode_change_time) &&
-                    std::chrono::milliseconds(intersend_wait_ms) < (present_time - last_send_time) &&
-                    parsed_sample.rel_hold_mode == Rel_Hold_mode_t::Rel)
-                {
-                  last_send_time = present_time;
-                  last_rel_mode_change_time = present_time;
-
-                  if (!send_command(TC_command_t::REL_key))
-                  {
-                    exit_cleanup();
-                    return EXIT_FAILURE;
-                  }
-                }
+              /**
+               * There is no point in continuing to collect data that we
+               * can't save in the output file.
+               *
+               * This MIGHT occur if the user has wired a long-lasting
+               * 9V source into the battery connector of their thermocoupler reader.
+               */
+              if (data_vec.size() >= static_cast<size_t>(BasicWorkbook::MAX_ROW - first_data_row + 1u))
+              {
+                std::printf("Amount of collected data has reached the .xlsx workbook file maximum row limit, %u.\n", BasicWorkbook::MAX_ROW);
+                std::printf("Stopping data collection.\n\n");
+                exit_cleanup();
+                return EXIT_SUCCESS;
               }
             }
 
@@ -1343,7 +1370,8 @@ int main (int argc, char** argv)
 
         /**
          * Erase the read data up through the first \r\n.
-         * Either it was valid and already parsed or it had an invalid length.
+         * Either it was valid and already parsed or it isn't valid
+         * and can be erased.
          */
         if (read_data.size() > line_end_pos + line_terminator_length)
         {
@@ -1369,7 +1397,8 @@ int main (int argc, char** argv)
   }
 
   /**
-   * This code should not be reached.
+   * This code should not be reached, since the only exits
+   * from the loop above are returns from main().
    */
   exit_cleanup();
   return EXIT_FAILURE;
