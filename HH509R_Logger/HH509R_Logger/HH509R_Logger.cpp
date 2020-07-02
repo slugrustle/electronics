@@ -175,9 +175,6 @@ static bool tc_reader_modified = false;
 static const size_t read_buf_size = 320u;
 static char read_buffer[read_buf_size];
 
-static std::ofstream log_file_handle;
-static std::ofstream log_file2_handle;
-
 /**
  * Human readable calendar date and time of test start.
  * Purely for placing in header of output file.
@@ -479,16 +476,6 @@ bool send_command(TC_command_t command)
  */
 void exit_cleanup(void)
 {
-  if (log_file_handle.is_open())
-  {
-    log_file_handle.close();
-  }
-
-  if (log_file2_handle.is_open())
-  {
-    log_file2_handle.close();
-  }
-
   /**
    * Ask the reader to stop sending data.
    */
@@ -882,22 +869,6 @@ int main (int argc, char** argv)
   double T1_T2_min_degC = std::numeric_limits<double>::max();
   double T1_T2_max_degC = std::numeric_limits<double>::min();
 
-  log_file_handle.open("log.txt", std::ios::out | std::ios::binary | std::ios::trunc);
-  if (!log_file_handle.is_open())
-  {
-    std::printf("could not open log file for debugging.\n");
-    exit_cleanup();
-    return EXIT_FAILURE;
-  }
-
-  log_file2_handle.open("log2.txt", std::ios::out | std::ios::binary | std::ios::trunc);
-  if (!log_file2_handle.is_open())
-  {
-    std::printf("could not open log file 2 for debugging.\n");
-    exit_cleanup();
-    return EXIT_FAILURE;
-  }
-
   /**
    * Receive thermocouple reader data in a loop that only terminates
    * after a Ctrl+C signal, 60 seconds of no data reception of any kind,
@@ -989,10 +960,7 @@ int main (int argc, char** argv)
         ncomread > 0u)
     {
       last_data_time = std::chrono::steady_clock::now();
-      log_file_handle.write(read_buffer, ncomread);
-      log_file_handle << std::flush;
       read_data.append(read_buffer, ncomread);
-      log_file2_handle << "\r\n...\r\n" << read_data << "\r\n...\r\n" << std::flush;
       size_t line_end_pos = 0;
       line_end_pos = read_data.find("\r\n", 0u);
 
@@ -1381,7 +1349,6 @@ int main (int argc, char** argv)
         {
           read_data.clear();
         }
-        log_file2_handle << "\r\n---\r\n" << read_data << "\r\n---\r\n" << std::flush;
 
         line_end_pos = read_data.find("\r\n", 0u);
       }
