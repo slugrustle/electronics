@@ -8,6 +8,8 @@ SOT23ZenerTester is a fixture and set of software that can be used to obtain the
 
 TestSequencer is a fairly simple board that surrounds an 8&#x2011;bit PIC microcontroller with a power supply, programming header, and various inputs and outputs through ESD protected terminal blocks. I use it for controlling other equipment and running tests.
 
+HH509R\_Logger is a command line program to log temperature measurements from an Omega Engineering HH509R thermocouple reader.
+
 ## Getting Started
 
 The README files the individual directories descibed above are a good place to start.
