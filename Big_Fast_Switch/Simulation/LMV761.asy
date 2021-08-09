@@ -1,0 +1,26 @@
+Version 4
+SymbolType BLOCK
+LINE Normal -80 -101 96 0
+LINE Normal -80 101 -80 -101
+LINE Normal 96 0 -80 101
+WINDOW 3 67 59 Center 2
+WINDOW 0 48 -48 Left 2
+SYMATTR Value LMV761
+SYMATTR Prefix X
+SYMATTR SpiceModel LMV761
+SYMATTR Description Comparator with Push-Pull Output
+PIN -80 -16 LEFT 8
+PINATTR PinName INP
+PINATTR SpiceOrder 1
+PIN -80 16 LEFT 8
+PINATTR PinName INN
+PINATTR SpiceOrder 2
+PIN -16 -64 TOP 8
+PINATTR PinName VCC
+PINATTR SpiceOrder 3
+PIN -16 64 BOTTOM 8
+PINATTR PinName VEE
+PINATTR SpiceOrder 4
+PIN 96 0 RIGHT 18
+PINATTR PinName OUT
+PINATTR SpiceOrder 5

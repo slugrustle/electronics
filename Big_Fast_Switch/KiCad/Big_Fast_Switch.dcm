@@ -1,0 +1,188 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 16AWG_Stranded
+D Through hole for solder connection of stranded 16awg wire
+F ~
+$ENDCMP
+#
+$CMP 1N4448W
+D 75V 250mA SOD-123 switching diode
+F ~
+$ENDCMP
+#
+$CMP 25SVPF47M
+D 47µF 25V SMD Aluminum Polymer Capacitor
+F ~
+$ENDCMP
+#
+$CMP 26AWG_Stranded
+D Through hole for solder connection of stranded 26awg wire
+F ~
+$ENDCMP
+#
+$CMP 282837-2
+D 2-position rising cage clamp terminal block, through hole
+F ~
+$ENDCMP
+#
+$CMP 30AWG_Solid
+D Through hole for solder connection of solid 30awg wire
+F ~
+$ENDCMP
+#
+$CMP 30KPA300CA
+D 300V VWM bidirectional TVS diode
+F ~
+$ENDCMP
+#
+$CMP 703W-00-52
+D Board mount IEC320-C14 AC input receptacle
+F ~
+$ENDCMP
+#
+$CMP 74651194R
+D 85A solderable M4 post connector
+F ~
+$ENDCMP
+#
+$CMP APT2012SURCK
+D Red surface mount LED
+F ~
+$ENDCMP
+#
+$CMP B32756G8156K000
+D 15µF 580VDC film capacitor
+F ~
+$ENDCMP
+#
+$CMP BAS16
+D switching diode
+F ~
+$ENDCMP
+#
+$CMP BAS70
+D 70V Schottky diode, SOT-23-3
+F ~
+$ENDCMP
+#
+$CMP BAV199
+D 2 series low leakage diodes in SOT-23-3
+$ENDCMP
+#
+$CMP C
+D Unpolarized capacitor
+K cap capacitor
+F ~
+$ENDCMP
+#
+$CMP DLP05LC
+D 5V VWM unidirectional TVS diode
+F ~
+$ENDCMP
+#
+$CMP Earth
+D Power symbol creates a global label with name "Earth"
+K power-flag ground gnd
+F ~
+$ENDCMP
+#
+$CMP Fan_Mount
+D Mount for Sunon MF40200V1-1000U-A99
+F ~
+$ENDCMP
+#
+$CMP GND1
+D Power symbol creates a global label with name "GND1" , ground
+K power-flag
+$ENDCMP
+#
+$CMP GND2
+D Power symbol creates a global label with name "GND2" , ground
+K power-flag
+$ENDCMP
+#
+$CMP LMV762MA
+D Two channel low offset voltage comparator
+$ENDCMP
+#
+$CMP MIC5225-3.3YM5
+D 3.3V linear regulator, SOT-23-5
+$ENDCMP
+#
+$CMP MMBT3904
+D NPN transistor, base/emitter/collector
+K transistor NPN
+F ~
+$ENDCMP
+#
+$CMP MMBT3906
+D PNP transistor, base/emitter/collector
+K transistor PNP
+F ~
+$ENDCMP
+#
+$CMP MPM-05-15
+D 15V 5W board mount AC DC converter
+$ENDCMP
+#
+$CMP MPM-05-3.3
+D 3.3V 5W board mount AC DC converter
+$ENDCMP
+#
+$CMP MPM-05-5
+D 5V 5W board mount AC DC converter
+$ENDCMP
+#
+$CMP PA-T21-38E
+D TO-247 / TO-264 transistor heatsink with clip
+F ~
+$ENDCMP
+#
+$CMP PTVS3V3S1UR
+D 3.3V VWM unidirectional TVS diode
+K diode
+F ~
+$ENDCMP
+#
+$CMP R
+D Resistor
+K R res resistor
+F ~
+$ENDCMP
+#
+$CMP SMF15A-E3-08
+D 15V VWM unidirectional TVS diode
+F ~
+$ENDCMP
+#
+$CMP SN74LVC1G11DBVR
+D 5V tolerant 3 input AND gate
+$ENDCMP
+#
+$CMP SN74LVC1G17DBVR
+D 5V tolerant schmitt trigger input non-inverting buffer
+$ENDCMP
+#
+$CMP STY145N65M5
+D Large 600V N-MOSFET
+F ~
+$ENDCMP
+#
+$CMP Screw_#4
+D Hole for #4 board mounting screw
+$ENDCMP
+#
+$CMP TPS3839G33DBZR
+D 3.08V active low output power supply monitor
+$ENDCMP
+#
+$CMP UCC21750
+D Isolated MOSFET/IGBT gate driver
+$ENDCMP
+#
+$CMP VS-90EPF06L-M3
+D 600V 90A fast soft recovery diode
+F ~
+$ENDCMP
+#
+#End Doc Library

@@ -10,6 +10,8 @@ TestSequencer is a fairly simple board that surrounds an 8&#x2011;bit PIC microc
 
 HH509R\_Logger is a command line program to log temperature measurements from an Omega Engineering HH509R thermocouple reader.
 
+Big\_Fast\_Switch is a sizable combination of film capacitor, N-MOSFET, and rectifier intended for generating input voltage transients to test DC->DC converters.
+
 ## Getting Started
 
 The README files the individual directories descibed above are a good place to start.

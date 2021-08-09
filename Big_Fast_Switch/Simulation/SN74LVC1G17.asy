@@ -1,0 +1,23 @@
+Version 4
+SymbolType BLOCK
+LINE Normal -48 -72 96 0
+LINE Normal -48 72 -48 -72
+LINE Normal 96 0 -48 72
+WINDOW 3 114 52 Center 2
+WINDOW 0 48 -48 Left 2
+SYMATTR Value SN74LVC1G17
+SYMATTR Prefix X
+SYMATTR SpiceModel SN74LVC1G17
+SYMATTR Description Non-Inverting Schmitt-Trigger Buffer
+PIN 96 0 RIGHT 22
+PINATTR PinName Y
+PINATTR SpiceOrder 1
+PIN -48 0 LEFT 8
+PINATTR PinName A
+PINATTR SpiceOrder 2
+PIN 0 -48 TOP 8
+PINATTR PinName VCC
+PINATTR SpiceOrder 3
+PIN 0 48 BOTTOM 10
+PINATTR PinName AGND
+PINATTR SpiceOrder 4

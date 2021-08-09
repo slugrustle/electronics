@@ -1,0 +1,114 @@
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage[landscape]{geometry}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[math-style=ISO]{unicode-math}
+\usepackage{textgreek}
+\usepackage{textcomp}
+%\usepackage{showframe}
+
+\geometry{
+letterpaper,
+top=0.5in,
+bottom=0.5in,
+left=0.5in,
+right=0.5in,
+includefoot
+}
+
+\setlength{\droptitle}{-0.55in}
+\pretitle{\begin{flushleft}}
+    \posttitle{\end{flushleft}}
+\preauthor{\begin{flushleft}}
+    \postauthor{\end{flushleft}}
+\predate{}
+\date{}
+\postdate{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{\thepage\ / \pageref{LastPage}}
+
+
+\begin{document}
+\title{Big Fast Switch Rev0 Bill of Materials}
+\author{2021{\textendash}08{\textendash}08}
+\maketitle
+\thispagestyle{fancy}
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{longtable}{| l || l | p{4cm} | p{3.5cm} | p{9.5cm} |}
+\hline\textbf{Part \#} & \textbf{Quantity} & \textbf{Designators} & \textbf{Manufacturer} & \textbf{Description}\\\hline\hline\endhead
+C2012X7R1H104K085AA & 2 & C1, C22 & TDK & 100nF {\textpm}10\% 50V X7R capacitor, 0805 case\\\hline
+CL31B225KBHNNNE & 1 & C2 & Samsung & 2.2{\textmu}F {\textpm}10\% 50V X7R capacitor, 1206 case\\\hline
+25SVPF47M & 3 & C3, C6, C9 & Panasonic & 47{\textmu}F {\textpm}20\% 25V Aluminum polymer capacitor\\\hline
+CL10B104KA8NFNC & 12 & C4, C7, C12, C13, C15, C17{\textendash}C21, C29, C32 & Samsung & 100nF {\textpm}10\% 25V X7R capacitor, 0603 case\\\hline
+CL21B225KAFNNWE & 3 & C5, C11, C14 & Samsung & 2.2{\textmu}F {\textpm}10\% 25V X7R capacitor, 0805 case\\\hline
+CL31B225KOHNNNE & 2 & C8, C10 & Samsung & 2.2{\textmu}F {\textpm}10\% 16V X7R capacitor, 1206 case\\\hline
+B32756G8156K000 & 1 & C16 & TDK & 15{\textmu}F {\textpm}10\% 600V film capacitor\\\hline
+CL32B106KAJNNNE & 4 & C23{\textendash}C26 & Samsung & 10{\textmu}F {\textpm}10\% 25V X7R capacitor, 1210 case\\\hline
+CL21B475KOFNNNE & 2 & C27, C28 & Samsung & 4.7{\textmu}F {\textpm}10\% 16V X7R capacitor, 0805 case\\\hline
+CL21B105KBFNNNG & 2 & C30, C31 & Samsung & 1{\textmu}F {\textpm}10\% 50V X7R capacitor, 0805 case\\\hline
+1N4448W-7-F & 2 & D1, D2 & Diodes Inc. & 75V 250mA switching diode, SOD{\textendash}123 case\\\hline
+BAS16,215 & 8 & D3{\textendash}D10 & Nexperia & 100V 215mA switching diode, SOT{\textendash}23{\textendash}3 case\\\hline
+VS-90EPF06L-M3 & 1 & D11 & Vishay & 600V 90A fast soft recovery rectifier diode, TO{\textendash}247AD 2L case\\\hline
+BAV199-7-F & 2 & D12, D13 & Diodes Inc. & Dual 85V 140mA low leakage diode, series connection, SOT{\textendash}23{\textendash}3 case\\\hline
+BAS70-7-F & 2 & D14, D15 & Diodes Inc. & 70V 70mA Shottky diode, SOT{\textendash}23{\textendash}3 case\\\hline
+PA-T21-38E & 2 & HS1, HS2 & Ohmite & Heatsink with clip for TO{\textendash}247 or TO{\textendash}264 devices\\\hline
+NTCALUG02A103F161 & 2 & {\textemdash} & Vishay & 10k{\textOmega} {\textpm}1\% $\text{R}_{25}$ 3984K {\textpm}0.5\% $\text{\textbeta}_{25/85}$ ring lug mount NTC thermistor. Mount one to HS1 and wire to J15 \& J17. Mount the other to HS2 and wire to J16 \& J18.\\\hline
+94500A221 & 2 & {\textemdash} & McMaster{\textendash}Carr & M3 x 0.5mm thread, 6mm long 2mm hex drive screw for mounting thermistors to heatsinks\\\hline
+93237A102 & 2 & {\textemdash} & McMaster{\textendash}Carr & M3 Belleville washer for mounting thermistors to heatsinks\\\hline
+3135-16-1-0500-011-1-TS & {\textemdash} & {\textemdash} & CnC Tech & Stranded 16AWG 600V wire for connecting HS1 (J10) \& HS2 (J13) to earth lug on back of J1\\\hline
+703W-00/52 & 1 & J1 & Qualtek & IEC320-C14 AC power input receptacle\\\hline
+74651194R & 4 & J8, J9, J11, J14 & Wurth & M4 shank solderable terminal\\\hline
+282837-2 & 1 & J12 & TE Connectivity & 5.08mm pitch 2 position rising cage clamp terminal block\\\hline
+APT2012SURCK & 3 & LED1{\textendash}LED3 & Kingbright & Red SMT LED, 0805 case\\\hline
+{\textemdash} & 2 & M1, M2 & {\textemdash} & 3D printed mount for fan\\\hline
+MF40200V1-1000U-A99 & 2 & {\textemdash} & Sunon & 5V 40mm x 40mm x 20mm BLDC fan\\\hline
+MPM-05-15 & 1 & PS1 & Meanwell & 15V 5W Medical rated board mount AC/DC converter\\\hline
+MPM-05-3.3 & 1 & PS2 & Meanwell & 3.3V 5W Medical rated board mount AC/DC converter\\\hline
+MPM-05-5 & 1 & PS3 & Meanwell & 5V 5W Medical rated board mount AC/DC converter\\\hline
+MMBT3906LT1G & 2 & Q1, Q2 & ON Semi & 40V 200mA PNP transistor, SOT{\textendash}23{\textendash}3 case\\\hline
+MMBT3904LT1G & 3 & Q3{\textendash}Q5 & ON Semi & 40V 200mA NPN transistor, SOT{\textendash}23{\textendash}3 case\\\hline
+STY145N65M5 & 1 & Q6 & ST & 650V 15m{\textOmega} 138A N{\textendash}MOSFET, Max247 case\\\hline
+{\textemdash} & 2 & {\textemdash} & Shenzhen Jia Rifeng Tai Company & 22mm x 28mm x 1mm Aluminum Nitride insulator for D11 \& Q6. Solid{\textemdash}no mounting hole.\\\hline
+249G & {\textemdash} & {\textemdash} & Aavid Thermalloy & Silicone grease for mounting D11 \& Q6.\\\hline
+RC0603FR-07620RL & 3 & R1, R2, R7 & Yageo & 620{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-0733KL & 4 & R3, R6, R21, R22 & Yageo & 33k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-0710KL & 7 & R4, R5, R25, R34, R35, R40, R41 & Yageo & 10k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-0743KL & 2 & R8, R9 & Yageo & 43k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-073K9L & 1 & R10 & Yageo & 3.9k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+ROX5SJ47K & 1 & R11 & TE Connectivity & 47k{\textOmega} {\textpm}5\% {\textpm}350ppm/{\textcelsius} 5W metal oxide film resistor, axial through hole\\\hline
+RC0603FR-076K2L & 2 & R12, R13 & Yageo & 6.2k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603JR-07100RL & 2 & R14, R15 & Yageo & 100{\textOmega} {\textpm}5\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603JR-0722RL & 2 & R16, R27 & Yageo & 22{\textOmega} {\textpm}5\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603JR-071KL & 2 & R17, R26 & Yageo & 1k{\textOmega} {\textpm}5\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-072K7L & 2 & R18, R19 & Yageo & 2.7k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+RC0603FR-0756KL & 1 & R20 & Yageo & 56k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+CRCW12062R70JNEAHP & 1 & R23 & Vishay & 2.7{\textOmega} {\textpm}5\% {\textpm}200ppm/{\textcelsius} 750mW pulse withstanding resistor, 1206 case\\\hline
+CRCW12061R00JNEAHP & 1 & R24 & Vishay & 1{\textOmega} {\textpm}5\% {\textpm}200ppm/{\textcelsius} 750mW pulse withstanding resistor, 1206 case\\\hline
+RC0603JR-07100KL & 3 & R28, R29, R42 & Yageo & 100k{\textOmega} {\textpm}5\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+ERJ-PB3B5230V & 6 & R30, R32, R36{\textendash}R39 & Panasonic & 523{\textOmega} {\textpm}0.1\% {\textpm}50ppm/{\textcelsius} 200mW resistor, 0603 case\\\hline
+RC0603FR-077K5L & 2 & R31, R33 & Yageo & 7.5k{\textOmega} {\textpm}1\% {\textpm}100ppm/{\textcelsius} 100mW resistor, 0603 case\\\hline
+90417A118 & 4 & S1{\textendash}S4 & McMaster{\textendash}Carr & \#4{\textendash}20 x 3/8" thread forming screw for plastics\\\hline
+90417A119 & 6 & {\textemdash} & McMaster{\textendash}Carr & \#4{\textendash}20 x 1/2" thread forming screw for plastics. 2 each applied to J1, M1, and M2.\\\hline
+{\textemdash} & 1 & {\textemdash} & {\textemdash} & 3D printed board support plate\\\hline
+30KPA300CA & 2 & TVS1, TVS4 & Littelfuse & 300V V\textsubscript{WM} bidirectional TVS diode, P600 axial through hole case\\\hline
+SMF15A-E3-08 & 1 & TVS2 & Vishay & 15V V\textsubscript{WM} unidirectional TVS diode, SMF case\\\hline
+PTVS3V3S1UR & 1 & TVS3 & Nexperia & 3.3V V\textsubscript{WM} unidirectional TVS diode, SOD{\textendash}123W case\\\hline
+DLP05LC-7-F & 1 & TVS5 & Diodes Inc. & 5V V\textsubscript{WM} low capacitance unidirectional TVS diode, SOT{\textendash}23{\textendash}3 case\\\hline
+MIC5225-3.3YM5 & 1 & U1 & Microchip & 3.3V linear regulator, SOT{\textendash}23{\textendash}5 case\\\hline
+UCC21750 & 1 & U2 & TI & Isolated MOSFET gate driver, Wide SOIC{\textendash}16 case\\\hline
+SN74LVC1G11DBVR & 1 & U3 & TI & 3-Input AND gate, SOT{\textendash}23{\textendash}6 case\\\hline
+SN74LVC1G17DBVR & 1 & U4 & TI & Non-inverting Schmitt trigger buffer, SOT{\textendash}23{\textendash}5 case\\\hline
+LMV762MA & 1 & U5 & TI & Dual precision comparator, SOIC{\textendash}8 case\\\hline
+TPS3839G33DBZR & 1 & U6 & TI & 3.08V threshold supply voltage monitor, active low output, SOT{\textendash}23{\textendash}3 case\\\hline
+\end{longtable}}
+\end{document}

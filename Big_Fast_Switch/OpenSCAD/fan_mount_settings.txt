@@ -1,0 +1,44 @@
+Application version: 2.20.0.0
+Estimated print time: 3h 49m
+Material usage: 10.70m (25g)
+Printer: Zortrax M200 Plus
+Profile: fr - abs
+Support type: Automatic
+Support: 30°
+Material: ABS-based filament
+Nozzle diameter: 0.4 mm
+Layer: 0.14 mm
+Quality: Default
+Infill: 70%
+Fan speed: Auto
+Seam: Random
+Outer contours: 0.00
+Holes: 0.00
+Contour-infill gap: 0.40
+Contour-top gap: 0.30
+Surface layers Top: 5
+Surface layers Bottom: 5
+Support Lite: Yes
+Smart bridges: Yes
+Max. wall thickness: 3.03 mm
+First layer Density: 100%
+First layer Print speed: 100%
+First layer Flow ratio: 100%
+First layer gap: 0.26 mm
+Raft Enabled: Yes
+Raft layers: 7
+Platform-raft gap: 0.22 mm
+Raft Density: 100%
+Raft Print speed: 100%
+Raft Flow ratio: 100%
+Print speed: +0%
+Extruder flow ratio: +0%
+Top layer infill (%): 100
+Bottom layer infill (%): 100
+Extrusion temp.: 235
+Platform temp.: 90
+Retraction speed: 36
+Retraction distance: 0.8
+Support Density: 3.00 mm
+Gap XY: 0.36
+Cooling tower: No
